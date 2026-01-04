@@ -1,0 +1,4 @@
+rm cmd wipes the -> inode tbl entry, disk blocks associated,root file entry, updates the dfl
+
+69th block was freed
+ 
