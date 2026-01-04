@@ -1,0 +1,15 @@
+# Docker-generated / eXpOS internals
+myexpos/
+xsm/
+expl/
+spl/
+xfs-interface/
+
+# Binaries
+*.o
+*.out
+*.bin
+
+# Editor junk
+*~
+*.swp
