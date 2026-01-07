@@ -1,9 +1,9 @@
 # Docker-generated / eXpOS internals
 myexpos/
-xsm/
-expl/
-spl/
-xfs-interface/
+# xsm/
+# expl/
+# spl/
+# xfs-interface/
 
 # Binaries
 *.o
