@@ -1,0 +1,10 @@
+alias i R0;
+i=1;
+
+while(i<=10)do
+	if(i%2!=0)then
+		breakpoint;
+		print i;
+	endif;
+	i=i+1;
+endwhile;
