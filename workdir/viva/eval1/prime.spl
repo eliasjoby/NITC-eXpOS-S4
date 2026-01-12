@@ -1,0 +1,27 @@
+alias n R0;
+alias cnt R1;
+alias i R2;
+alias j R3;
+alias flag R4;
+i=2;
+n=10;
+cnt=1;
+
+while(cnt<=n)do
+	flag=0;
+	j=2;
+	while(j<i)do
+		if(i%j==0)then
+			flag=1;
+			break;
+		endif;
+		j=j+1;
+	endwhile;
+	if(flag==0)then
+		print i;
+		cnt=cnt+1;
+	endif;
+	i=i+1;
+endwhile;
+
+	
