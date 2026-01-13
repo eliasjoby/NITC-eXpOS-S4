@@ -1,0 +1,51 @@
+//load init pgm
+
+loadi(65,7);
+loadi(66,8);
+
+//load INT10 module
+
+loadi(22,35);
+loadi(23,36);
+
+//load the excepn handler
+
+loadi(2,15);
+loadi(3,16);
+
+//Set up PT
+
+PTBR=PAGE_TABLE_BASE;
+PTLR=3;
+
+//0
+[PTBR+0]=65;
+[PTBR+1]="0100";
+
+[PTBR+2]=66;
+[PTBR+3]="0100";
+
+[PTBR+4]=76;
+[PTBR+5]="0110";
+
+
+//set up stack and SP
+
+SP=2*512;
+
+// MMU while paging, now checks the 0,1,...2th entry of the PT and finds it corresp to 76th PP
+
+[76*512]=0;
+
+//physical addr where stack is stored = virtual Entry Point
+
+//Go to the very top of the stack (Address 38912) and write //a '0' there, to put IP=0 (LA...to kick start the pgm exec)
+
+
+ireturn;
+
+// on iret in kernel mode,
+// h/w looks at SP-> LP=2
+//checks PT, LP=2->PP=76
+//set IP=[76th pg in Phy mem]=0
+//switch to user mode, start exec at addr 0
