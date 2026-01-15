@@ -1,0 +1,6 @@
+load --init /home/expos/myexpos/workdir/prac/sq.xsm
+load --int=10 /home/expos/myexpos/workdir/prac/haltpgm.xsm
+load --exhandler /home/expos/myexpos/workdir/prac/haltpgm.xsm
+load --library /home/expos/myexpos/expl/library.lib
+load --int=timer /home/expos/myexpos/workdir/prac/timer.xsm
+load --os /home/expos/myexpos/workdir/prac/os_startup.xsm
