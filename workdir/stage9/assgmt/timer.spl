@@ -1,0 +1,22 @@
+//set UTPR val
+[PROCESS_TABLE + (16*[SYSTEM_STATUS_TABLE +(0*8) +1]) + 13]=SP;
+
+//set SP to kernel stack
+SP=[PROCESS_TABLE + (16*[SYSTEM_STATUS_TABLE +(0*8)+1]) + 11]*512 -1;
+
+//backup user context into kernel stack
+backup;
+
+//exec timer interrupt
+print "TIMER";
+
+//restore user context from kernel stack
+restore;
+
+//set SP to user SP
+SP=[PROCESS_TABLE + [SYSTEM_STATUS_TABLE + (0*8)+1] + 13];
+
+// print pID of currently executing process
+print [SYSTEM_STATUS_TABLE +(0*8)+1];
+
+ireturn;
