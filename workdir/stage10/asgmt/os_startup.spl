@@ -1,0 +1,64 @@
+//init
+loadi(65,7);
+loadi(66,8);
+
+//INT10
+loadi(22,35);
+loadi(23,36);
+
+//exhandler
+loadi(2,15);
+loadi(3,16);
+
+//library
+loadi(63,13);
+loadi(64,14);
+
+//timer
+loadi(4,17);
+loadi(5,18);
+
+//INT7
+loadi(16,29);
+loadi(17,30);
+
+PTBR=PAGE_TABLE_BASE;
+PTLR=10;
+
+[PTBR+0]=63;
+[PTBR+1]="0100";
+[PTBR+2]=64;
+[PTBR+3]="0100";
+
+[PTBR+4]=76;
+[PTBR+5]="0110";
+[PTBR+6]=77;
+[PTBR+7]="0110";
+
+[PTBR+8]=65;
+[PTBR+9]="0100";
+[PTBR+10]=66;
+[PTBR+11]="0100";
+[PTBR+12]=-1;
+[PTBR+13]="0000";
+[PTBR+14]=-1;
+[PTBR+15]="0000";
+
+[PTBR+16]=78;
+[PTBR+17]="0110";
+[PTBR+18]=79;
+[PTBR+19]="0110";
+
+//set SP
+
+SP=8*512;
+[78*512]=[65*512 +1];
+
+//set processtable val -> pid, UArea pg no.
+[PROCESS_TABLE+ 0*16 +1]=0;
+[PROCESS_TABLE + 0*16 +11]=80; 
+
+//set Systemstatus table val -> pid
+[SYSTEM_STATUS_TABLE + 0*8 + 1]=0;
+
+ireturn;

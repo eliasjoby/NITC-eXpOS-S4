@@ -1,0 +1,15 @@
+//set utpr val
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 8*0 + 1] + 13]=SP;
+
+//sp to kernel stack
+SP=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 8*0 +1] +11]*512-1;
+
+//backup into kernel stack
+backup;
+
+print "Timer";
+
+restore;
+
+SP=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 8*0 + 1] + 13];
+ireturn;
