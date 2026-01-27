@@ -1,0 +1,7 @@
+load --init /home/expos/myexpos/workdir/stage11/num.xsm
+load --int=10 /home/expos/myexpos/workdir/stage11/haltpgm.xsm
+load --exhandler /home/expos/myexpos/workdir/stage11/haltpgm.xsm
+load --library /home/expos/myexpos/workdir/stage11/write.lib
+load --int=timer /home/expos/myexpos/workdir/stage11/timer.xsm
+load --os /home/expos/myexpos/workdir/stage11/os_startup.xsm
+load --int=7 /home/expos/myexpos/workdir/stage11/writeSyscall_int7_handler.xsm
