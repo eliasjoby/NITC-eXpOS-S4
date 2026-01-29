@@ -6,7 +6,7 @@ int main(){
     begin
         num=1;
         while(num<=50)do
-            temp=exposcall("Write",-2,num);
+            write(num);//or temp=exposcall("Write",-2,num); //both will push "Write" onto the stack according to the ABI convention
             num=num+5;
         endwhile;
         return 0;
