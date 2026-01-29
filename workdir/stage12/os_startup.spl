@@ -1,0 +1,122 @@
+//init
+loadi(65,7);
+loadi(66,8);
+
+//int 10
+loadi(22,35);
+loadi(23,36);
+
+//exhandler
+loadi(2,15);
+loadi(3,16);
+
+//library
+loadi(63,13);
+loadi(64,14);
+
+//timer
+loadi(4,17);
+loadi(5,18);
+
+//int 7
+loadi(16,29);
+loadi(17,30);
+
+//idle
+loadi(69,11);
+loadi(70,12);
+
+PTBR=PAGE_TABLE_BASE;
+PTLR=10;
+
+[PTBR+0]=63;
+[PTBR+1]="0100";
+[PTBR+2]=64;
+[PTBR+3]="0100";
+
+[PTBR+4]=-1;
+[PTBR+5]="0000";
+[PTBR+6]=-1;
+[PTBR+7]="0000";
+
+[PTBR+8]=69;
+[PTBR+9]="0100";
+[PTBR+10]=70;
+[PTBR+11]="0100";
+[PTBR+12]=-1;
+[PTBR+13]="0000";
+[PTBR+14]=-1;
+[PTBR+15]="0000";
+
+[PTBR+16]=81; // for init code, User Area pg no at 80
+[PTBR+17]="0110";
+[PTBR+18]=-1;
+[PTBR+19]="0000";
+
+[81*512]=[69*512+1];//put the entry point of Idle onto its physical stack (Page 81).
+
+//-------------------------------------------------------
+
+PTBR=PAGE_TABLE_BASE+20;
+PTLR=10;
+
+[PTBR+0]=63;
+[PTBR+1]="0100";
+[PTBR+2]=64;
+[PTBR+3]="0100";
+
+[PTBR+4]=76;
+[PTBR+5]="0110";
+[PTBR+6]=77;
+[PTBR+7]="0110";
+
+[PTBR+8]=65;
+[PTBR+9]="0100";
+[PTBR+10]=66;
+[PTBR+11]="0100";
+[PTBR+12]=-1;
+[PTBR+13]="0000";
+[PTBR+14]=-1;
+[PTBR+15]="0000";
+
+[PTBR+16]=78;
+[PTBR+17]="0110";
+[PTBR+18]=79;
+[PTBR+19]="0110";
+
+
+SP=8*512;
+[78*512]=[65*512+1];
+
+
+//---------------------------------------------------------------------
+
+// already 76,77 (heap) 78,79 (stack), so start from 80
+
+
+//set Process tbl -> pid, UArea Pg No,state,UPTR
+
+
+//idle
+[PROCESS_TABLE+1]=0;
+[PROCESS_TABLE+11]=82;
+[PROCESS_TABLE+4]=CREATED;//state
+[PROCESS_TABLE+12]=0;//kptr
+[PROCESS_TABLE+13]=8*512; //UPTR ->userStack always starts at logical pg 8
+//store PTBR also 
+[PROCESS_TABLE+14]=PTBR-20;
+[PROCESS_TABLE+15]=10;
+
+
+//init
+[PROCESS_TABLE + 1*16 + 1]=1;
+[PROCESS_TABLE + 1*16 + 11]=80;
+[PROCESS_TABLE + 1*16 + 4]=RUNNING;
+[PROCESS_TABLE + 1*16 + 13]=8*512;
+[PROCESS_TABLE + 1*16 + 14]=PTBR;
+[PROCESS_TABLE + 1*16 + 15]=10;
+
+//set System status tbl to correctly identify that init was running first
+[SYSTEM_STATUS_TABLE+1]=1; 
+
+ireturn;

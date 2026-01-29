@@ -1,0 +1,55 @@
+breakpoint;
+
+[PROCESS_TABLE + (16*[SYSTEM_STATUS_TABLE +(0*8) +1]) + 13]=SP; //the currently executing PID is stored in system_status_tbl + 1 th position
+SP=[PROCESS_TABLE + (16*[SYSTEM_STATUS_TABLE +(0*8)+1]) + 11]*512 -1;
+backup;
+
+//---------------------
+
+alias currPID R0;
+currPID=[SYSTEM_STATUS_TABLE +1];
+
+alias process_tbl_entry R1;
+process_tbl_entry=PROCESS_TABLE+16*currPID;
+
+[process_tbl_entry + 12]=SP%512; //kptr val is offset
+[process_tbl_entry + 14]=PTBR;
+[process_tbl_entry+ 15]=PTLR;
+
+[process_tbl_entry + 4]=READY;
+
+//scheduling algorithm
+
+alias newPID R2;
+
+if(currPID==0)then
+    newPID=1;
+else
+    newPID=0;
+endif;
+
+alias new_process_tbl_entry R3;
+new_process_tbl_entry=PROCESS_TABLE+newPID*16;
+
+[SYSTEM_STATUS_TABLE+1]=newPID;
+PTBR=[new_process_tbl_entry+14];
+PTLR=[new_process_tbl_entry+15];
+
+//set Kernel SP,PTBR,PTLR
+
+if([new_process_tbl_entry+4]==CREATED)then  //nothing to restore in this case from the kernel stack
+    [new_process_tbl_entry+4]=RUNNING;
+    SP=[new_process_tbl_entry +13];
+    ireturn;
+endif;
+
+SP=[new_process_tbl_entry + 11]*512 + [new_process_tbl_entry+12];
+
+//---------------------
+restore;
+SP=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + (0*8)+1] + 13];
+
+//
+breakpoint;
+
+ireturn;
