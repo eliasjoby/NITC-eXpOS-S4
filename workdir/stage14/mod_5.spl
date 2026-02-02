@@ -1,0 +1,52 @@
+//pid of curr process
+alias currPID R6;
+currPID=[SYSTEM_STATUS_TABLE+1];
+
+//push BP of the timer ISR 
+multipush(BP);
+
+alias curr_pt_entry R7;
+curr_pt_entry=PROCESS_TABLE+16*currPID;
+
+[curr_pt_entry + 12]=SP%512;
+[curr_pt_entry + 14]=PTBR;
+[curr_pt_entry + 15]=PTLR;
+
+alias pid R9;
+pid=(currPID+1)%16;
+
+alias flag R10;
+flag=0;
+
+alias newPID R12;
+
+while(pid!=currPID)do
+    if([PROCESS_TABLE + 16*pid + 4]==READY || [PROCESS_TABLE + 16*pid + 4]==CREATED)then
+        flag=1;
+        newPID=pid;
+        break;
+    endif;
+    pid=(pid+1)%16;
+endwhile;
+
+if(flag==0)then
+    newPID=0;
+endif;
+
+SP=[PROCESS_TABLE + 16*newPID + 11]*512 + ([PROCESS_TABLE + 16*newPID + 12]);
+PTBR=[PROCESS_TABLE + 16*newPID + 14];
+PTLR=[PROCESS_TABLE + 16*newPID + 15];
+
+[SYSTEM_STATUS_TABLE + 1]=newPID;
+
+if([PROCESS_TABLE + 16*newPID + 4]==CREATED)then
+    SP=[PROCESS_TABLE + 16*newPID + 13];
+    [PROCESS_TABLE + 16*newPID + 4]=RUNNING;
+    [PROCESS_TABLE + 16*newPID + 9]=0;
+    ireturn;
+endif;
+
+[PROCESS_TABLE + 16*newPID + 4]=RUNNING;
+multipop(BP);
+
+return;

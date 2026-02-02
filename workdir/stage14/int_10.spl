@@ -1,0 +1,20 @@
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 4]=TERMINATED;
+
+alias i R9;
+alias currPID R10;
+alias offset R12;
+
+currPID=[SYSTEM_STATUS_TABLE+1];
+
+i=(currPID+1)%16;
+
+while(i!=currPID)do
+    if(i!=0 && [PROCESS_TABLE + 16*i + 4]!=TERMINATED)then
+        call MOD_5;
+    endif;
+    i=(i+1)%16;
+endwhile;
+
+halt;
+
+// INT 10 should terminate only the process which invoked it, and schedule other surviving process

@@ -1,0 +1,13 @@
+fdisk
+load --init /home/expos/myexpos/workdir/stage14/users/odd.xsm
+load --int=10 /home/expos/myexpos/workdir/stage14/int_10.xsm
+load --exhandler /home/expos/myexpos/workdir/stage14/int_10.xsm
+load --library /home/expos/myexpos/workdir/stage11/write.lib
+load --int=timer /home/expos/myexpos/workdir/stage14/timer.xsm
+load --os /home/expos/myexpos/workdir/stage14/os_startup.xsm
+load --int=7 /home/expos/myexpos/workdir/stage14/int_7.xsm
+load --idle /home/expos/myexpos/workdir/stage14/users/idle.xsm
+load --module 7 /home/expos/myexpos/workdir/stage14/mod_7.xsm
+load --exec /home/expos/myexpos/workdir/stage14/users/even.xsm
+load --module 5 /home/expos/myexpos/workdir/stage14/mod_5.xsm
+load --exec /home/expos/myexpos/workdir/stage14/users/prime.xsm
