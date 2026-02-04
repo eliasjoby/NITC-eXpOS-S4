@@ -1,0 +1,41 @@
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 0*8 +1] + 9]=5;
+
+alias userSP R0;
+userSP=SP;
+
+
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 0*8 + 1] + 13]=userSP;
+SP=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 0*8+1]+11]*512-1;
+backup;
+
+alias fd R1;
+
+PTBR=[PROCESS_TABLE+ 16*[SYSTEM_STATUS_TABLE+1] + 14];
+
+fd=[[PTBR+2*((userSP-4)/512)]*512+ ((userSP-4)%512)];
+
+if (fd==-2)then
+	alias word R2;
+	word=[[PTBR+2*((userSP-3)/512)]*512 + ((userSP-3)%512)];
+
+	//------------------
+	multipush(R0,R1,R2);
+
+	R1=3;
+	R2=[SYSTEM_STATUS_TABLE+1];
+	R3=word;
+	call MOD_4;
+
+	multipop(R0,R1,R2);
+	//------------------
+	
+	[[PTBR+2*((userSP-1)/512)]*512 + ((userSP-1)%512)]=0;
+else
+	[[PTBR+2*((userSP-1)/512)]*512 + ((userSP-1)%512)]=-1;
+endif;
+
+
+restore;
+SP=userSP;
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 0*8 + 1] + 9]=0;
+ireturn;

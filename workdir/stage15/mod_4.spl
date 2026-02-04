@@ -1,0 +1,47 @@
+//DEVICE MANAGER module
+
+alias fxnNum R1;
+alias currPID R2;
+alias wordOut R3;
+
+if(fxnNum==1)then
+    R0=-1;
+    return;
+endif;
+
+if(fxnNum==2)then
+    R0=-1;
+    return;
+endif;
+
+if(fxnNum==3)then
+    //------------------------calling acquire terminal
+
+    multipush(R0,R1,R2,R3);
+    fxnNum=8;
+    currPID=[SYSTEM_STATUS_TABLE+1];
+
+    call MOD_0;
+
+    multipop(R0,R1,R2,R3);
+    print R3; 
+
+    //-----------------------calling release terminal
+
+    multipush(R0,R1,R2,R3);
+    fxnNum=9;
+    currPID=[SYSTEM_STATUS_TABLE+1];
+
+    call MOD_0;
+
+    multipop(R0,R1,R2,R3);
+    return;
+
+endif;
+
+//if(fxnNum==4)then
+    //write code later
+//endif;
+
+R0=-1;
+return;
