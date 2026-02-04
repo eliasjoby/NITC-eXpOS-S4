@@ -1,7 +1,7 @@
 breakpoint;
 
 [PROCESS_TABLE + (16*[SYSTEM_STATUS_TABLE +(0*8) +1]) + 13]=SP; //the currently executing PID is stored in system_status_tbl + 1 th position
-SP=[PROCESS_TABLE + (16*[SYSTEM_STATUS_TABLE +(0*8)+1]) + 11]*512-1;
+SP=[PROCESS_TABLE + (16*[SYSTEM_STATUS_TABLE +(0*8)+1]) + 11]*512;
 
 //active kernel stack of the currently running process
 

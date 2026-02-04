@@ -1,8 +1,9 @@
+//EXIT
+
 [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 4]=TERMINATED;
 
 alias i R9;
 alias currPID R10;
-alias offset R12;
 
 currPID=[SYSTEM_STATUS_TABLE+1];
 

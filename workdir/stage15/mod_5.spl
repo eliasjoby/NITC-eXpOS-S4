@@ -1,11 +1,11 @@
 //SCHEDULER module
 
+//push BP of the timer ISR 
+multipush(BP,R6,R7,R9,R10,R12);
+
 //pid of curr process
 alias currPID R6;
 currPID=[SYSTEM_STATUS_TABLE+1];
-
-//push BP of the timer ISR 
-multipush(BP);
 
 alias curr_pt_entry R7;
 curr_pt_entry=PROCESS_TABLE+16*currPID;
@@ -49,6 +49,6 @@ if([PROCESS_TABLE + 16*newPID + 4]==CREATED)then
 endif;
 
 [PROCESS_TABLE + 16*newPID + 4]=RUNNING;
-multipop(BP);
+multipop(BP,R6,R7,R9,R10,R12);
 
 return;
