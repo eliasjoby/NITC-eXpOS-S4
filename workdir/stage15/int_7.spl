@@ -1,12 +1,12 @@
 [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 0*8 +1] + 9]=5;
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 0*8 + 1] + 13]=SP;
 
-alias userSP R0;
-userSP=SP;
-
-
-[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 0*8 + 1] + 13]=userSP;
 SP=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 0*8+1]+11]*512-1;
 backup;
+
+alias userSP R0;
+userSP=[PROCESS_TABLE + 16 * [SYSTEM_STATUS_TABLE + 1] + 13];
+
 
 alias fd R1;
 
@@ -36,6 +36,6 @@ endif;
 
 
 restore;
-SP=userSP;
+SP=[PROCESS_TABLE + 16 * [SYSTEM_STATUS_TABLE + 1] + 13];
 [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 0*8 + 1] + 9]=0;
 ireturn;
