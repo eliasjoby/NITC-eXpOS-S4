@@ -67,8 +67,10 @@ if(fxnNum==4)then
 
     //store content of input buffer to wordAddress...as given in R3;
     alias pAddr R6; //of address to store in --- R3 has logical address
+    alias lAddr R3;
+
     PTBR=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 14];
-    pAddr=[PTBR+2*((R3)/512)]*512 + (R3)%512;
+    pAddr=[PTBR+2*(lAddr/512)]*512 + lAddr%512;
 
     [pAddr]=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 8];
     return;

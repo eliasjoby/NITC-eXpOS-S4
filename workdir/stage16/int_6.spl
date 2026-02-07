@@ -14,7 +14,7 @@ fd=[[PTBR+2*((userSP-4)/512)]*512 + (userSP-4)%512];
 
 if(fd==-1)then
     alias word_addr R2;//virtual address of word
-    word_addr=[[PTBR+2*((userSP-3)/512)]*512 + (userSP-3)%512];
+    word_addr=userSP-3;
 
     //call Device manager for Terminal Read
     multipush(R0,R1,R2,R3);
