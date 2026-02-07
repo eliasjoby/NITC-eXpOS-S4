@@ -1,0 +1,15 @@
+fdisk
+load --exhandler /home/expos/myexpos/workdir/stage16/int_10.xsm
+load --library /home/expos/myexpos/expl/library.lib
+load --int=6 /home/expos/myexpos/workdir/stage16/int_6.xsm
+load --int=7 /home/expos/myexpos/workdir/stage16/int_7.xsm
+load --int=10 /home/expos/myexpos/workdir/stage16/int_10.xsm
+load --int=timer /home/expos/myexpos/workdir/stage16/timer.xsm
+load --int=console /home/expos/myexpos/workdir/stage16/console.xsm
+load --os /home/expos/myexpos/workdir/stage16/os_startup.xsm
+load --init /home/expos/myexpos/workdir/stage16/users/gcd.xsm
+load --idle /home/expos/myexpos/workdir/stage16/users/idle.xsm
+load --module 0 /home/expos/myexpos/workdir/stage16/mod_0.xsm
+load --module 4 /home/expos/myexpos/workdir/stage16/mod_4.xsm
+load --module 5 /home/expos/myexpos/workdir/stage16/mod_5.xsm
+load --module 7 /home/expos/myexpos/workdir/stage16/mod_7.xsm
