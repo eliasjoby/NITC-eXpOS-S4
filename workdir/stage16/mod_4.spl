@@ -66,19 +66,11 @@ if(fxnNum==4)then
     multipop(R0,R1,R2,R3,R5);
 
     //store content of input buffer to wordAddress...as given in R3;
-    alias lAddr R3;
-    alias pAddr R6; //of address to store in --- R3 has logical address
-    alias lAddr_address_of_a R7;
-    alias pAddr_address_of_a R8;
-
+    alias pAddr R6; //of address to store in --- R3 has lAddr of var
     PTBR=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 14];
-    pAddr=[PTBR+2*(lAddr/512)]*512 + lAddr%512;//we got physical address of the locn where the logical address of var 'a' was stored
+    pAddr=[PTBR+2*((R3)/512)]*512 + ((R3)%512);
 
-    lAddr_address_of_a=[pAddr];
-
-    pAddr_address_of_a=[PTBR+2*(lAddr_address_of_a/512)]*512 + lAddr_address_of_a%512;
-
-    [pAddr_address_of_a]=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 8];
+    [pAddr]=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 8];
     return;
 endif;
 
