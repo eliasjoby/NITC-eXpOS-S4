@@ -32,7 +32,7 @@ int main(){
     begin
         bruh="a: ";
         t=exposcall("Write",-2,bruh);
-        t=exposcall("Read",-1,a);
+        read(a);
         t=exposcall("Write",-2,a);
 
         bruh="b: ";

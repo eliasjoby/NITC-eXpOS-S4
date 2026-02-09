@@ -1,0 +1,45 @@
+decl
+    int arr[100];
+    int n,i,j,temp;
+    str bruh;
+enddecl
+
+int main(){
+    begin
+        bruh="Enter n: ";
+        write(bruh);
+        read(n);
+
+        bruh="Enter array: ";
+        write(bruh);
+        i=0;
+        while(i<n)do
+            read(arr[i]);
+            i=i+1;
+        endwhile;
+
+        j=n-2;
+        while(j>=0)do
+            i=0;
+            while(i<=j)do
+                if(arr[i]>arr[i+1])then 
+                    temp=arr[i];
+                    arr[i]=arr[i+1];
+                    arr[i+1]=temp;
+                endif;
+                i=i+1;
+            endwhile;
+            j=j-1;
+        endwhile;
+
+        bruh="Sorted Arr: ";
+        write(bruh);
+        i=0;
+        while(i<n)do
+            write(arr[i]);
+            i=i+1;
+        endwhile;
+
+        return 0;
+    end
+}

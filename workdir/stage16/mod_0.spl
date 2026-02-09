@@ -20,7 +20,6 @@ if(fxnNum==8)then
     [TERMINAL_STATUS_TABLE+1]=currPID;
 
     R0=0;
-    breakpoint;
     return;
 endif;
 
@@ -30,7 +29,6 @@ if(fxnNum==9)then
     //check if process had acquired the terminal
     if(currPID!=[TERMINAL_STATUS_TABLE+1])then
         R0=-1;
-        breakpoint;
         return;
     else
         [TERMINAL_STATUS_TABLE]=0;
@@ -44,7 +42,6 @@ if(fxnNum==9)then
         endwhile;
 
         R0=0;
-        breakpoint;
         return;
     endif;
 endif;
