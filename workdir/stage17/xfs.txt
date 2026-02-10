@@ -1,0 +1,19 @@
+fdisk
+load --exhandler /home/expos/myexpos/workdir/stage17/int_10.xsm
+load --library /home/expos/myexpos/expl/library.lib
+load --int=6 /home/expos/myexpos/workdir/stage17/int_6.xsm
+load --int=7 /home/expos/myexpos/workdir/stage17/int_7.xsm
+load --int=9 /home/expos/myexpos/workdir/stage17/int_9.xsm
+load --int=10 /home/expos/myexpos/workdir/stage17/int_10.xsm
+load --int=timer /home/expos/myexpos/workdir/stage17/timer.xsm
+load --int=console /home/expos/myexpos/workdir/stage17/console.xsm
+load --os /home/expos/myexpos/workdir/stage17/os_startup.xsm
+load --init /home/expos/myexpos/workdir/stage17/users/shell.xsm
+load --idle /home/expos/myexpos/workdir/stage17/users/idle.xsm
+load --module 0 /home/expos/myexpos/workdir/stage17/mod_0.xsm
+load --module 1 /home/expos/myexpos/workdir/stage17/mod_1.xsm
+load --module 2 /home/expos/myexpos/workdir/stage17/mod_2.xsm
+load --module 4 /home/expos/myexpos/workdir/stage17/mod_4.xsm
+load --module 5 /home/expos/myexpos/workdir/stage17/mod_5.xsm
+load --module 7 /home/expos/myexpos/workdir/stage17/mod_7.xsm
+load --exec /home/expos/myexpos/workdir/stage17/users/odd.xsm
