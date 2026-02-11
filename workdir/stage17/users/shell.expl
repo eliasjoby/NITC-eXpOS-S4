@@ -5,7 +5,7 @@ int main()
 		int tmp;
 	enddecl
 	begin
-		s = "shellmk1 $";
+		s = "shell_file: ";
 		tmp = exposcall("Write", -2, s);
 		tmp = exposcall("Read", -1, s);
 		tmp = exposcall("Exec", s);

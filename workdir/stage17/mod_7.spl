@@ -248,7 +248,7 @@ init_process_tbl=PROCESS_TABLE+16;
 alias i R5;
 i=0;
 while(i<MAX_MEM_PAGE)do
-    if(i<=82)then   
+    if(i<=81)then   
         [MEMORY_FREE_LIST+i]=1;
     else
         [MEMORY_FREE_LIST+i]=0;

@@ -111,7 +111,7 @@ endwhile;
 // Load the blocks into the pages we just allocated
 i=0;
 while(i<4)do
-    if([PTBR+8+ 2*i] != -1) then
+    if([INODE_TABLE + 16*finode_idx + 8 + i]!=-1) then
         loadi([PTBR+8+ 2*i], [INODE_TABLE + 16*finode_idx + 8 + i]);
     endif;
     i=i+1;

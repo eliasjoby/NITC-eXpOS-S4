@@ -1,4 +1,4 @@
-//Resource Manager module
+//Memory Manager module
 
 alias retVal R0;
 alias fxnNum R1;
@@ -29,6 +29,9 @@ if(fxnNum==1)then //GET_FREE_PAGE
         endif;
         i=i+1;
     endwhile;
+
+    breakpoint;
+
     return;
 endif;
 
@@ -46,6 +49,9 @@ if(fxnNum==2)then //RELEASE_PAGE
         i=i+1;
     endwhile;
     endif;
+
+    breakpoint;
+
     return;
 endif;
 
