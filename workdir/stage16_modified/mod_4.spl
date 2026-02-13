@@ -1,0 +1,105 @@
+//DEVICE MANAGER module
+
+alias fxnNum R1;
+alias currPID R2;
+alias wordOut R3;
+alias retVal R5;
+
+if(fxnNum==1)then
+    R0=-1;
+    return;
+endif;
+
+if(fxnNum==2)then
+    R0=-1;
+    return;
+endif;
+
+if(fxnNum==3)then
+    //------------------------calling acquire terminal
+
+    multipush(R0,R1,R2,R3,R5);
+    fxnNum=8;
+    currPID=[SYSTEM_STATUS_TABLE+1];
+
+    call MOD_0;
+
+    multipop(R0,R1,R2,R3,R5);
+    print wordOut; 
+
+    //-----------------------calling release terminal
+
+    //multipush(R0,R1,R2,R3,R5);
+    //fxnNum=9;
+    //currPID=[SYSTEM_STATUS_TABLE+1];
+
+    //call MOD_0;
+
+    //multipop(R0,R1,R2,R3,R5);
+
+//-------------------------------------------------------------------
+    alias i R6;
+    multipush(R0,R1,R2,R3,R4,R5,R6);
+
+    if(R2!=[TERMINAL_STATUS_TABLE+1])then
+    R0=-1;
+    else    
+        [TERMINAL_STATUS_TABLE]=0;
+        i=0;
+        while(i<16)do
+            if([PROCESS_TABLE + i*16 + 4]==WAIT_TERMINAL)then
+                    [PROCESS_TABLE + i*16 + 4]=READY;
+            endif;
+            i=i+1;
+        endwhile;
+
+        R0=0;
+    endif;
+
+    multipop(R0,R1,R2,R3,R4,R5,R6);
+
+//-------------------------------------------------------------------
+
+
+
+    return;
+
+endif;
+
+if(fxnNum==4)then
+
+    //acquire terminal
+   multipush(R0,R1,R2,R3,R5);
+   fxnNum=8;
+   currPID=[SYSTEM_STATUS_TABLE+1];
+   call MOD_0;
+
+   multipop(R0,R1,R2,R3,R5);
+
+    //---------------------------------------------------------
+
+    //issue IN and block the terminal
+   read;
+   [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] +4]=WAIT_TERMINAL;
+
+    //call scheduler
+    multipush(R0,R1,R2,R3,R5);
+    call MOD_5;
+
+    //--------------------------------------------------------
+
+    //returns after console interrupt...process table updated with input buffer
+    multipop(R0,R1,R2,R3,R5);
+
+    //store content of input buffer to wordAddress...as given in R3;
+    alias pAddr R6; //of address to store in --- R3 has lAddr of var
+    PTBR=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 14];
+    pAddr=[PTBR+2*((R3)/512)]*512 + ((R3)%512);
+
+    [pAddr]=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 8];
+    return;
+endif;
+
+R0=-1;
+return;
+

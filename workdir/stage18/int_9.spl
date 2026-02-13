@@ -1,0 +1,129 @@
+//Exec INT_handler (Syscall :9)
+
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 9]=9;
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 13]=SP;
+
+// Set SP to top of UArea Page
+SP=[PROCESS_TABLE+ 16*[SYSTEM_STATUS_TABLE+1] + 11]*512 -1;
+
+alias userSP R5;
+alias arg1_fname R6;
+alias flag R7;
+alias i R8;
+alias finode_idx R9;
+
+userSP=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 13];
+arg1_fname=[[PTBR+ 2*((userSP-4)/512)]*512+((userSP-4)%512)];
+
+flag=0;
+i=0;
+while(i<MAX_FILE_NUM)do
+    if(([INODE_TABLE + i*16 + 1]==arg1_fname)&&([INODE_TABLE+i*16+0]==EXEC))then
+        finode_idx=i;
+        flag=1;
+        break;
+    endif;
+    i=i+1;
+endwhile;
+
+if(flag==0)then
+    [[PTBR+ 2*((userSP-1)/512)]*512+((userSP-1)%512)]=-1;
+    SP=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 13];
+    [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 9]=0;
+    ireturn;
+endif;
+
+//call EXIT_PROCESS
+
+multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9);
+R1=EXIT_PROCESS;
+R2=[SYSTEM_STATUS_TABLE+1];
+call MOD_1;
+multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9);
+
+alias uAreaPgNo R10;
+uAreaPgNo=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 11];
+
+//adjust MEMORY_FREE_LIST of uAreaPg, and (memory free cnt) in system status tbl
+[MEMORY_FREE_LIST+uAreaPgNo]=[MEMORY_FREE_LIST+uAreaPgNo]+1;
+[SYSTEM_STATUS_TABLE + 2]=[SYSTEM_STATUS_TABLE + 2]-1;
+
+//initialise kernel stack of new process
+SP=uAreaPgNo*512-1;
+
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 4]=RUNNING;
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 7]=finode_idx;
+
+//allocate new pgs, and set pg tbl entries for new process
+
+//(i)lib
+[PTBR+0]=63;[PTBR+1]="0100";
+[PTBR+2]=64;[PTBR+3]="0100";
+
+//(ii)heap
+multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10);
+R1=GET_FREE_PAGE;
+call MOD_2;
+[PTBR+4]=R0;[PTBR+5]="0110";
+multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10);
+
+multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10);
+R1=GET_FREE_PAGE;
+call MOD_2;
+[PTBR+6]=R0;[PTBR+7]="0110";
+multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10);
+
+//(iii)stack
+multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R12);
+R1=GET_FREE_PAGE;
+call MOD_2;
+[PTBR+16]=R0;[PTBR+17]="0110";
+multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R12);
+
+multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R12);
+R1=GET_FREE_PAGE;
+call MOD_2;
+[PTBR+18]=R0;[PTBR+19]="0110";
+multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R12);
+
+//(iv) code - ALLOCATION LOOP
+//find no.of blks occupied by file from INODE_TABLE
+alias blk_cnt R11;
+blk_cnt=0;
+i=0;
+
+while(i<4)do
+    if([INODE_TABLE + 16*finode_idx + 8 + i]!=-1)then
+        blk_cnt=blk_cnt+1;
+
+        multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
+        R1=GET_FREE_PAGE;
+        call MOD_2;
+        [PTBR+8+ 2*i]=R0;[PTBR+9+ 2*i]="0100";
+        multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
+    else
+        [PTBR+8+ 2*i]=-1;[PTBR+9+ 2*i]="0000";
+    endif;
+    i=i+1;
+endwhile;
+
+//(v) code - LOADING LOOP
+// Load the blocks into the pages we just allocated
+i=0;
+while(i<4)do
+    if([INODE_TABLE + 16*finode_idx + 8 + i]!=-1) then
+        loadi([PTBR+8+ 2*i], [INODE_TABLE + 16*finode_idx + 8 + i]);
+    endif;
+    i=i+1;
+endwhile;
+
+//------------------------------------------------
+
+alias stack_top R12;
+stack_top=[PTBR+16];
+
+[stack_top*512]=[[PTBR+8]*512+1];
+SP=8*512;
+
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 9]=0;
+ireturn;

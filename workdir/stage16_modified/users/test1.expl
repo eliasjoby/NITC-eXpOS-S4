@@ -1,0 +1,32 @@
+decl
+    int arr[5];
+enddecl
+
+int main(){
+    decl
+        int i,j,temp;
+        str bruh;
+    enddecl
+
+    begin
+        j=0;
+        while(j<5)do
+            bruh="read arr1: ";
+            write(bruh);
+            read(arr[j]);
+            j=j+1;
+        endwhile;
+
+        bruh="PRINT_arr1:";
+        write(bruh);
+        j=0;
+        while(j<5)do
+            bruh="write arr1: ";
+            write(bruh);
+            write(arr[j]);
+            j=j+1;
+        endwhile;
+
+        return 0;
+    end
+}

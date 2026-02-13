@@ -1,0 +1,55 @@
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1]+ 13]=SP;
+SP=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1]+ 11]*512 -1; //change to kernel stack of currently executing process to run the console interrupt routine on
+
+backup;
+
+alias reqPID R0;
+reqPID=[TERMINAL_STATUS_TABLE+1];
+
+alias currEntry R1;
+currEntry=PROCESS_TABLE + 16*reqPID;
+
+//copy from P0 to input buffer
+breakpoint;
+[currEntry + 8]=P0;
+breakpoint;
+
+//release the terminal
+//multipush(R0,R1);
+//R1=9;
+//R2=reqPID;
+//call MOD_0;
+//multipop(R0,R1);
+
+
+//--------------------------------------------------------
+
+alias i R3;
+R2=reqPID;
+
+multipush(R0,R1,R2,R3);
+
+if(R2!=[TERMINAL_STATUS_TABLE+1])then
+    R0=-1;
+else    
+    [TERMINAL_STATUS_TABLE]=0;
+    i=0;
+    while(i<16)do
+        if([PROCESS_TABLE + i*16 + 4]==WAIT_TERMINAL)then
+                [PROCESS_TABLE + i*16 + 4]=READY;
+        endif;
+        i=i+1;
+    endwhile;
+
+    R0=0;
+endif;
+
+multipop(R0,R1,R2,R3);
+
+//-------------------------------------------------------
+
+
+restore;
+SP=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1]+ 13];
+ireturn;
+
