@@ -7,6 +7,7 @@ load --int=9 /home/expos/myexpos/workdir/stage18/int_9.xsm
 load --int=10 /home/expos/myexpos/workdir/stage18/int_10.xsm
 load --int=timer /home/expos/myexpos/workdir/stage18/timer.xsm
 load --int=console /home/expos/myexpos/workdir/stage18/console.xsm
+load --int=disk /home/expos/myexpos/workdir/stage18/disk.xsm
 load --os /home/expos/myexpos/workdir/stage18/os_startup.xsm
 load --init /home/expos/myexpos/workdir/stage18/users/shell.xsm
 load --idle /home/expos/myexpos/workdir/stage18/users/idle.xsm

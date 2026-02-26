@@ -16,6 +16,10 @@ loadi(5,18);
 loadi(8,21);
 loadi(9,22);
 
+//disk
+loadi(6,19);
+loadi(7,20);
+
 //int6 : read
 loadi(14,27);
 loadi(15,28);
@@ -120,6 +124,23 @@ init_process_tbl=PROCESS_TABLE+16;
 [init_process_tbl+ 14]=PTBR;
 [init_process_tbl+ 15]=10;
 
+//initialise per-process resource tbl for init
+
+//allot the last 16 words -> 8 entries of 2 words each
+
+multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
+alias j R11;
+j=0;
+alias i R12;
+
+i=(80+1)*512-1;
+while(j<16)do
+    [i-j]=-1;
+    j=j+1;
+endwhile;
+
+multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
+
 //---------------------------------------------------------------------
 
 //user p1
@@ -166,6 +187,23 @@ init_process_tbl=PROCESS_TABLE+16;
 //[user_p1_process_tbl+ 15]=10;
 //
 //[86*512]=[85*512+1];
+
+//initialise per-process resource tbl for user p1
+
+//allot the last 16 words -> 8 entries of 2 words each
+
+//multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
+//alias j R11;
+//j=0;
+//alias i R12;
+//
+//i=(88+1)*512-1;
+//while(j<16)do
+//    [i-j]=-1;
+//    j=j+1;
+//endwhile;
+//
+//multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
 
 //--------------------------------------------------------------------------
 
@@ -221,6 +259,25 @@ init_process_tbl=PROCESS_TABLE+16;
 //
 //[92*512]=[89*512+1];
 
+//initialise per-process resource tbl for user p2
+
+//allot the last 16 words -> 8 entries of 2 words each
+
+//multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
+//alias j R11;
+//j=0;
+//alias i R12;
+//
+//i=(94+1)*512-1;
+//while(j<16)do
+//    [i-j]=-1;
+//    j=j+1;
+//endwhile;
+//
+//multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
+
+//------------------------------------------------------------------
+//------------------------------------------------------------------
 
 //set the remaining process table structures to terminated
 
@@ -244,11 +301,9 @@ init_process_tbl=PROCESS_TABLE+16;
 
 //initialise memory free list
 
-
-alias i R5;
 i=0;
 while(i<MAX_MEM_PAGE)do
-    if(i<=81)then   
+    if(i<=94)then   
         [MEMORY_FREE_LIST+i]=1;
     else
         [MEMORY_FREE_LIST+i]=0;
@@ -263,5 +318,6 @@ endwhile;
 
 //-----------------
 [TERMINAL_STATUS_TABLE]=0;
+[DISK_STATUS_TABLE]=0;
 
 return;

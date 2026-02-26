@@ -10,9 +10,9 @@ alias currEntry R1;
 currEntry=PROCESS_TABLE + 16*reqPID;
 
 //copy from P0 to input buffer
-breakpoint;
+
 [currEntry + 8]=P0;
-breakpoint;
+
 
 //release the terminal
 multipush(R0,R1);

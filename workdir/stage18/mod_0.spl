@@ -2,8 +2,23 @@
 
 alias fxnNum R1;
 alias currPID R2;
-alias currEntry R5;
 alias i R6;
+
+
+//Acquire disk
+if(fxnNum==3)then
+
+    while([DISK_STATUS_TABLE+0]==1)do
+        [PROCESS_TABLE + currPID*16 +4]=WAIT_DISK;
+        multipush(R0,R1,R2,R3,R4,R6);
+        call MOD_5;
+        multipop(R0,R1,R2,R3,R4,R6);
+    endwhile;
+
+    [DISK_STATUS_TABLE +0]=1;
+    [DISK_STATUS_TABLE+4]=currPID;
+    return;
+endif;
 
 //acquire terminal
 if(fxnNum==8)then
