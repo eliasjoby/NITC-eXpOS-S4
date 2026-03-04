@@ -51,3 +51,75 @@ if(fxnNum==2)then //RELEASE_PAGE
     return;
 endif;
 
+
+if(fxnNum==5)then //GET_CODE_PAGE
+    breakpoint;
+    alias blkNo R2;
+    //return the mem pg no.
+
+    alias pid R5;
+    pid=0;
+    while(pid<MAX_PROC_NUM)do
+        alias codeSgmt R6;
+        codeSgmt=4;
+        while(codeSgmt<=7)do
+            if([DISK_MAP_TABLE +10*pid + codeSgmt]==blkNo)then
+                //now check this process' pg tbl entry
+                alias pg_tbl_base R7;
+                pg_tbl_base=[PROCESS_TABLE + 16*pid +14];
+                
+                if(([pg_tbl_base+codeSgmt*2]!=-1) && (([pg_tbl_base+codeSgmt*2 +1]=="0100") || ([pg_tbl_base+codeSgmt*2 +1]=="1100")))then
+                    //code seg is valid
+                    //use this for our current process
+                    R0=[pg_tbl_base + 2*codeSgmt];
+                    [MEMORY_FREE_LIST+R0]=[MEMORY_FREE_LIST+R0]+1; //since pg being shared by another process
+                    return;
+                endif;
+            endif;
+            codeSgmt=codeSgmt+1;
+        endwhile;
+        pid=pid+1;
+    endwhile;
+
+    //reached here : code seg not found in any running process
+
+    //call GET_FREE_PAGE from mem manager module
+
+    multipush(R0,R1,R2,R3,R4,R5,R6,R7);
+
+    R1=GET_FREE_PAGE;
+    call MOD_2;
+
+    R10=R0;
+    R11=R0;//free pg we will be using
+
+    multipop(R0,R1,R2,R3,R4,R5,R6,R7);
+    R0=R10;
+
+    //load code from disk to the free page we got
+    //Disk load function of device manager
+
+    multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10);
+    R1=DISK_LOAD;
+    R4=blkNo;
+    R2=[SYSTEM_STATUS_TABLE+1];
+    R3=R10;
+    call MOD_4;
+    multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10);
+    R0=R10;
+
+    breakpoint;
+
+    return;
+endif;
+
+
+if(fxnNum==4)then //RELEASE_BLOCK
+    alias blkNo R2;
+    alias pid R3;
+
+    [DISK_FREE_LIST + blkNo]=0;
+    return;
+endif;
+
+return;

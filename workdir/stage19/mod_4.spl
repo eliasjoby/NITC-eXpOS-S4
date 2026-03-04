@@ -38,7 +38,7 @@ if(fxnNum==2)then // DISK_LOAD
     return;
 endif;
 
-if(fxnNum==3)then
+if(fxnNum==3)then //
     //------------------------calling acquire terminal
 
     multipush(R0,R1,R2,R3,R5);

@@ -36,7 +36,6 @@ loadi(21,34);
 loadi(22,35);
 loadi(23,36);
 
-
 //init
 loadi(65,7);
 loadi(66,8);
@@ -72,6 +71,8 @@ loadi(51,64);
 loadi(59,3);
 loadi(60,4);
 
+//load disk free list
+loadi(61,2);
 
 //-------------------------------------------------------
 
@@ -110,7 +111,7 @@ PTLR=10;
 
 [78*512]=[65*512+1];
 
-
+//----------------------------------------------------
 //set Process tbl -> pid, UArea Pg No,state,UPTR
 
 alias init_process_tbl R10;
@@ -123,6 +124,8 @@ init_process_tbl=PROCESS_TABLE+16;
 [init_process_tbl+ 13]=8*512;
 [init_process_tbl+ 14]=PTBR;
 [init_process_tbl+ 15]=10;
+
+//-----------------------------------------------------
 
 //initialise per-process resource tbl for init
 
@@ -140,6 +143,22 @@ while(j<16)do
 endwhile;
 
 multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
+
+//--------------------------------------------------
+
+//disk_map_tbl for init process
+[DISK_MAP_TABLE +10*1 +0]=80;//user area pg
+[DISK_MAP_TABLE +10*1 +1]=-1;
+[DISK_MAP_TABLE + 10*1 + 2] = 76; //Heap
+[DISK_MAP_TABLE + 10*1 + 3] = 77;
+[DISK_MAP_TABLE + 10*1 + 4] = 7; //code
+[DISK_MAP_TABLE + 10*1 + 5] = 8;
+[DISK_MAP_TABLE + 10*1 + 6] = -1;
+[DISK_MAP_TABLE + 10*1 + 7] = -1;
+[DISK_MAP_TABLE + 10*1 + 8] = 78; //stack
+[DISK_MAP_TABLE + 10*1 + 9] = 79;
+
+//=================================================
 
 //---------------------------------------------------------------------
 
@@ -204,6 +223,20 @@ multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
 //endwhile;
 //
 //multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
+
+
+//disk_map_tbl for init process
+//[DISK_MAP_TABLE +10*2 +0]=88; //user area pg
+//[DISK_MAP_TABLE +10*2 +1]=-1;
+//[DISK_MAP_TABLE + 10*2 + 2] = 83; //Heap
+//[DISK_MAP_TABLE + 10*2 + 3] = 84;
+//[DISK_MAP_TABLE + 10*2 + 4] = fill in later; //code
+//[DISK_MAP_TABLE + 10*2 + 5] = -1;
+//[DISK_MAP_TABLE + 10*2 + 6] = -1;
+//[DISK_MAP_TABLE + 10*2 + 7] = -1;
+//[DISK_MAP_TABLE + 10*2 + 8] = 86; //stack
+//[DISK_MAP_TABLE + 10*2 + 9] = 87;
+
 
 //--------------------------------------------------------------------------
 
@@ -276,6 +309,20 @@ multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
 //
 //multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
 
+
+//disk_map_tbl for init process
+//[DISK_MAP_TABLE +10*3 +0]=94; //user area pg
+//[DISK_MAP_TABLE +10*3 +1]=-1;
+//[DISK_MAP_TABLE + 10*3 + 2] = 90; //Heap
+//[DISK_MAP_TABLE + 10*3 + 3] = 91;
+//[DISK_MAP_TABLE + 10*3 + 4] = 89; //code
+//[DISK_MAP_TABLE + 10*3 + 5] = -1;
+//[DISK_MAP_TABLE + 10*3 + 6] = -1;
+//[DISK_MAP_TABLE + 10*3 + 7] = -1;
+//[DISK_MAP_TABLE + 10*3 + 8] = 92; //stack
+//[DISK_MAP_TABLE + 10*3 + 9] = 93;
+
+
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 
@@ -314,7 +361,7 @@ endwhile;
 //Wait_mem_count and Mem_free_count
 
 [SYSTEM_STATUS_TABLE + 3]=0;
-[SYSTEM_STATUS_TABLE + 2]=(127-83+1);//83-127
+[SYSTEM_STATUS_TABLE + 2]=(127-95+1);//
 
 //-----------------
 [TERMINAL_STATUS_TABLE]=0;
