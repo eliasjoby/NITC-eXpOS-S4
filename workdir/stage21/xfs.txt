@@ -1,0 +1,22 @@
+fdisk
+load --exhandler /home/expos/myexpos/workdir/stage20/exception.xsm
+load --library /home/expos/myexpos/expl/library.lib
+load --int=6 /home/expos/myexpos/workdir/stage20/int_6.xsm
+load --int=7 /home/expos/myexpos/workdir/stage20/int_7.xsm
+load --int=8 /home/expos/myexpos/workdir/stage20/int_8.xsm
+load --int=9 /home/expos/myexpos/workdir/stage20/int_9.xsm
+load --int=10 /home/expos/myexpos/workdir/stage20/int_10.xsm
+load --int=timer /home/expos/myexpos/workdir/stage20/timer.xsm
+load --int=console /home/expos/myexpos/workdir/stage20/console.xsm
+load --int=disk /home/expos/myexpos/workdir/stage20/disk.xsm
+load --os /home/expos/myexpos/workdir/stage20/os_startup.xsm
+load --init /home/expos/myexpos/workdir/stage20/users/forkTest.xsm
+load --idle /home/expos/myexpos/workdir/stage20/users/idle.xsm
+load --module 0 /home/expos/myexpos/workdir/stage20/mod_0.xsm
+load --module 1 /home/expos/myexpos/workdir/stage20/mod_1.xsm
+load --module 2 /home/expos/myexpos/workdir/stage20/mod_2.xsm
+load --module 4 /home/expos/myexpos/workdir/stage20/mod_4.xsm
+load --module 5 /home/expos/myexpos/workdir/stage20/mod_5.xsm
+load --module 7 /home/expos/myexpos/workdir/stage20/mod_7.xsm
+load --exec /home/expos/myexpos/workdir/stage20/users/odd.xsm
+load --exec /home/expos/myexpos/workdir/stage20/users/even.xsm
