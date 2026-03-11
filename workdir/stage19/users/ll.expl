@@ -26,7 +26,7 @@ int main()
 
     q=head;
     write("Enter elts:");
-    while (length!=0)  do
+    while (length>0)  do
       read(x);
       p=alloc();
       p.data=x;

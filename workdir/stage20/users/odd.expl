@@ -1,6 +1,9 @@
+decl
+    int i;
+enddecl
 int main(){
-    decl
-        int i,bruh,temp;
+    decl    
+        int bruh;
     enddecl
 
     begin
@@ -8,7 +11,7 @@ int main(){
         while(i<=100)do
             bruh=i%2;
             if(bruh!=0)then
-                temp=exposcall("Write",-2,i);
+                bruh=exposcall("Write",-2,i);
             endif;
             i=i+1;
         endwhile;

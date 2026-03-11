@@ -8,9 +8,12 @@ backup;
 multipush(EIP);
 
 if(( (EC!=0) || ([PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] +13]==(PTLR*512-1))))then
-    print "EC";
-    print EC;
-    print "StackOverflow";
+    if ([PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 13] == (PTLR*512-1)) then
+        print "StackOverflow";
+    else
+        print "EC";
+        print EC;
+    endif;
 
     //call EXIT_PROCESS
     multipush(R0,R1,R2,R3,R4);

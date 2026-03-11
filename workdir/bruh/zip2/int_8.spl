@@ -1,0 +1,192 @@
+//fork interrupt handler (fork-Syscall 8)
+alias userSP R5;
+userSP=SP;
+
+//mode flag
+[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+9]=8;
+[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+13]=SP;
+SP=[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+11]*512-1;
+
+//call Get_Pcb_Entry from process manager module
+multipush(R0,R1,R5,R7);
+R1=GET_PCB_ENTRY;
+call MOD_1;
+
+//R0 has child currPID
+R10=R0;
+multipop(R0,R1,R5,R7);
+R0=R10;
+
+alias childPID R0;
+
+if(childPID==-1)then
+    alias ret R6;
+    ret=[PTBR+2*((userSP-1)/512)]*512 + (userSP-1)%512;
+    [ret]=-1;
+    [PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+9]=0;
+    SP=[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+13];
+    ireturn;
+endif;
+
+//here: we have space for a child process entry in pcb 
+
+//check if heap present
+if([PTBR+2*2]==-1)then
+    //call Get_Free_Pg
+    multipush(R0,R1,R5,R7);
+    R1=GET_FREE_PAGE;
+    call MOD_2;
+    //R0 has free pg no.
+    R10=R0;
+    multipop(R0,R1,R5,R7);
+    [PTBR +2*2]=R10;
+    [PTBR+2*2+1]="0110";
+
+    multipush(R0,R1,R5,R7);
+    R1=GET_FREE_PAGE;
+    call MOD_2;
+    //R0 has free pg no.
+    R10=R0;
+    multipop(R0,R1,R5,R7);
+    [PTBR +3*2]=R10;
+    [PTBR+3*2+1]="0110";
+endif;
+
+//we're sure that parent process has heap pages
+
+//get stack and user area pg of child process
+//here, aux info is just a placedholder val - correct val will be set below
+
+alias childPTBR R7;
+childPTBR=PAGE_TABLE_BASE +childPID*20;
+
+//set up child process stack
+multipush(R0,R1,R5,R7);
+R1=GET_FREE_PAGE;
+call MOD_2;
+//R0 has free pg no.
+R10=R0;
+multipop(R0,R1,R5,R7);
+[childPTBR+8*2]=R10;
+
+multipush(R0,R1,R5,R7);
+R1=GET_FREE_PAGE;
+call MOD_2;
+//R0 has free pg no.
+R10=R0;
+multipop(R0,R1,R5,R7);
+[childPTBR+9*2]=R10;
+
+//set up userArea pg for child process
+
+multipush(R0,R1,R5,R7);
+R1=GET_FREE_PAGE;
+call MOD_2;
+//R0 has free pg no.
+R10=R0;
+multipop(R0,R1,R5,R7);
+alias childProcessTbl R8;
+childProcessTbl=PROCESS_TABLE+16*childPID;
+[childProcessTbl+11]=R10;
+
+//initialise the process tbl of child
+
+//copy userID
+[childProcessTbl+3]=[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+3];
+
+//copy swap flag,user area swap status 
+[childProcessTbl+6]=[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+6];
+[childProcessTbl+10]=[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+10];
+
+//inode index
+[childProcessTbl+7]=[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+7];
+
+//uptr
+[childProcessTbl+13]=[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+13];
+
+//mode flag, kptr,tick
+[childProcessTbl+9]=0;
+[childProcessTbl+12]=0;
+[childProcessTbl+0]=0;
+
+//PPID =parent pid 
+[childProcessTbl+2]=[SYSTEM_STATUS_TABLE+1];
+
+//state =created
+[childProcessTbl+4]=CREATED;
+
+//NOTE
+//uAP already set at line 79
+//pid,ptbr,ptlr set in pcb entry fxn
+//  i/p buffer : no need to initialise
+
+//copy per-process resource tbl to child process
+//located at last 8*2 words of userAP
+//  0-511 in total, last 16 words needed
+
+alias i R9;
+i=0;
+while(i<16)do
+    [[childProcessTbl+11]*512 +511-i]=[[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+11]*512 +511-i];
+    i=i+1;
+endwhile;
+
+//copy per-process disk map tbl of parent to child
+//dont copy values for stack pg and userAP
+
+//copy heap,code
+i=0;
+while(i<10)do
+    [DISK_MAP_TABLE +childPID*10 +i]=[DISK_MAP_TABLE+10*[SYSTEM_STATUS_TABLE+1]+i];
+    i=i+1;
+endwhile;
+
+//userAP, stack are invalid for child
+[DISK_MAP_TABLE+10*childPID+0]=-1;
+[DISK_MAP_TABLE+10*childPID+1]=-1;
+[DISK_MAP_TABLE+10*childPID+8]=-1;
+[DISK_MAP_TABLE+10*childPID+9]=-1;
+
+//initialise pg tbl of child
+i=0;
+while(i<=7)do
+    [childPTBR+i*2]=[PTBR+i*2];
+    [childPTBR+i*2+1]=[PTBR+i*2+1];
+    if([PTBR+i*2]!=-1)then
+        [MEMORY_FREE_LIST+[PTBR+i*2]]=[MEMORY_FREE_LIST+[PTBR+i*2]]+1;
+    endif;
+    i=i+1;
+endwhile;
+
+//stack pages ->assigned in line 56
+//but aux info same as parent
+[childPTBR+8*2+1]="0110";
+[childPTBR+9*2+1]="0110";
+
+//copy userStack content word by word 
+i=0;
+while(i<512)do
+    [[childPTBR+8*2]*512+i]=[[PTBR +8*2]*512 +i];
+    [[childPTBR+9*2]*512+i]=[[PTBR +9*2]*512 +i];
+    i=i+1;
+endwhile;
+
+//store BP to top of kernel stack of child process
+i=[childProcessTbl+11]*512-1;
+i=i+1;
+[i]=BP;
+
+//set up the return val in parent
+alias ret R2;
+ret= ([PTBR +2*((userSP-1)/512)]*512) + (userSP-1)%512;
+[ret]=childPID;
+
+//set up return val in child 
+ret=[childPTBR+2*((userSP-1)/512)]*512 + (userSP-1)%512;
+[ret]=0;
+
+//mode of par=0
+[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+9]=0;
+SP=[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+13];
+
+ireturn;
