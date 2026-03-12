@@ -11,7 +11,8 @@ int main(){
         while(i<=100)do
             bruh=i%2;
             if(bruh==0)then
-                bruh=exposcall("Write",-2,i);
+                //bruh=exposcall("Write",-2,i);
+                write(i);
             endif;
             i=i+1;
         endwhile;
