@@ -1,0 +1,27 @@
+fdisk
+load --exhandler /home/expos/myexpos/workdir/stage21/exception.xsm
+load --library /home/expos/myexpos/expl/library.lib
+load --int=6 /home/expos/myexpos/workdir/stage21/int_6.xsm
+load --int=7 /home/expos/myexpos/workdir/stage21/int_7.xsm
+load --int=8 /home/expos/myexpos/workdir/stage21/int_8.xsm
+load --int=9 /home/expos/myexpos/workdir/stage21/int_9.xsm
+load --int=10 /home/expos/myexpos/workdir/stage21/int_10.xsm
+load --int=11 /home/expos/myexpos/workdir/stage21/int_11.xsm
+load --int=15 /home/expos/myexpos/workdir/stage21/int_15.xsm
+load --int=timer /home/expos/myexpos/workdir/stage21/timer.xsm
+load --int=console /home/expos/myexpos/workdir/stage21/console.xsm
+load --int=disk /home/expos/myexpos/workdir/stage21/disk.xsm
+load --module 0 /home/expos/myexpos/workdir/stage21/mod_0.xsm
+load --module 1 /home/expos/myexpos/workdir/stage21/mod_1.xsm
+load --module 2 /home/expos/myexpos/workdir/stage21/mod_2.xsm
+load --module 4 /home/expos/myexpos/workdir/stage21/mod_4.xsm
+load --module 5 /home/expos/myexpos/workdir/stage21/mod_5.xsm
+load --module 7 /home/expos/myexpos/workdir/stage21/mod_7.xsm
+load --os /home/expos/myexpos/workdir/stage21/os_startup.xsm
+load --init /home/expos/myexpos/workdir/stage21/users/shell.xsm
+load --idle /home/expos/myexpos/workdir/stage21/users/idle.xsm
+load --exec /home/expos/myexpos/workdir/stage21/users/samples/odd.xsm
+load --exec /home/expos/myexpos/workdir/stage21/users/samples/even.xsm
+load --exec /home/expos/myexpos/workdir/stage21/users/samples/ll.xsm
+load --exec /home/expos/myexpos/workdir/stage21/users/pid.xsm
+load --exec /home/expos/myexpos/workdir/stage21/users/pidTest.xsm
