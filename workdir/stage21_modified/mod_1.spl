@@ -1,0 +1,145 @@
+//Process Manager module
+
+alias fxnNum R1;
+alias pid R2;
+
+if(fxnNum==1)then //GET_PCB_ENTRY
+    alias i R5;
+    alias found R6;
+    i=1;found=0;
+    while(i<MAX_PROC_NUM)do
+        if([PROCESS_TABLE+16*i+4]==TERMINATED)then
+            found=1;
+            break;
+        endif;
+        i=i+1;
+    endwhile;
+    if(found==0)then
+        R0=-1;
+        return;
+    endif;
+    //here:free pcb entry found
+    [PROCESS_TABLE+i*16+1]=i;
+    [PROCESS_TABLE+i*16+4]=ALLOCATED;
+    [PROCESS_TABLE+i*16+14]=PAGE_TABLE_BASE+i*20;
+    [PROCESS_TABLE+i*16+15]=10;
+    R0=i;
+    return;
+endif;
+
+if(fxnNum==2)then //FREE_USER_AREA_PAGE
+    alias uAreaPgNo R5;
+    uAreaPgNo=[PROCESS_TABLE + 16*pid + 11];
+
+    //release page to Resource manager module
+    multipush(R1,R2,R5);
+    R1=RELEASE_PAGE;
+    R2=uAreaPgNo;
+
+    call MOD_2;
+    multipop(R1,R2,R5);
+    return;
+endif;
+
+if(fxnNum==3)then //EXIT_PROCESS
+
+    //----------------------------------------
+    if([PROCESS_TABLE+16*pid+9]!=9)then
+
+        //we aren't coming from the exec system call
+        alias i R5;
+        i=0;
+        while(i<MAX_PROC_NUM)do
+            if( ([PROCESS_TABLE+16*i+4]==WAIT_PROCESS) && ([PROCESS_TABLE+16*i+5]==pid) )then
+                [PROCESS_TABLE+16*i+4]=READY;
+            endif;
+            if([PROCESS_TABLE+16*i+2]==pid)then //orphans...set ppid -1
+                [PROCESS_TABLE+16*i+2]=-1;
+            endif;
+            i=i+1;
+        endwhile;
+        
+    endif;
+    //----------------------------------------
+
+    //call Free Page Table from Process manager
+    multipush(R1,R2,R5);
+    R1=FREE_PAGE_TABLE;
+    R2=pid;
+    call MOD_1;
+    multipop(R1,R2,R5);
+
+    //call Free User Area page from Process manager
+    multipush(R1,R2,R5);
+    R1=FREE_USER_AREA_PAGE;
+    R2=pid;
+    call MOD_1;
+    multipop(R1,R2,R5);
+
+    [PROCESS_TABLE + 16*pid + 4]=TERMINATED;
+    return;
+endif;
+
+if(fxnNum==4)then //FREE_PAGE_TABLE
+    alias ptbr_currProcess R7;
+    alias i R6;
+
+    ptbr_currProcess=[PROCESS_TABLE+16*pid + 14];
+
+    i=0;
+    while(i<=1)do
+        [ptbr_currProcess + 2*i]=-1;
+        [ptbr_currProcess + 2*i+1]="0000";
+        i=i+1;
+    endwhile;
+
+    i=4;
+    while(i<20)do
+        if([ptbr_currProcess + i]!=-1)then
+            multipush(R1,R2,R3,R4,R5,R6,R7);
+            R1=RELEASE_PAGE;
+            R2=[ptbr_currProcess+i];
+            call MOD_2;
+            multipop(R1,R2,R3,R4,R5,R6,R7);
+        endif;
+        [ptbr_currProcess + i]=-1;
+        [ptbr_currProcess + i+1]="0000";
+        i=i+2;
+    endwhile;
+
+    //--------------------------------------------------
+
+    //loop thru the DISK_MAP_TABLE
+
+    //2 to 3 is heap
+    i=2;
+    while(i<=3)do
+        if([DISK_MAP_TABLE +10*pid +i]!=-1)then
+            multipush(R1,R2,R3,R4,R5,R6,R7);
+            R1=RELEASE_BLOCK;
+            R3=pid;
+            R2=[DISK_MAP_TABLE + 10*pid+i];
+            call MOD_2;
+            multipop(R1,R2,R3,R4,R5,R6,R7);
+        endif;
+        [DISK_MAP_TABLE +10*pid +i]=-1;
+        i=i+1;
+    endwhile;
+
+    //8 to 9 is stack
+    i=8;
+    while(i<=9)do
+        if([DISK_MAP_TABLE +10*pid +i]!=-1)then
+            multipush(R1,R2,R3,R4,R5,R6,R7);
+            R1=RELEASE_BLOCK;
+            R3=pid;
+            R2=[DISK_MAP_TABLE + 10*pid+i];
+            call MOD_2;
+            multipop(R1,R2,R3,R4,R5,R6,R7);
+        endif;
+        [DISK_MAP_TABLE +10*pid +i]=-1;
+        i=i+1;
+    endwhile;
+
+    return;
+endif;
