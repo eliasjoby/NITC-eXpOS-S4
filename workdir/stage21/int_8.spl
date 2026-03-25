@@ -135,8 +135,8 @@ endwhile;
 //dont copy values for stack pg and userAP
 
 //copy heap,code
-i=0;
-while(i<10)do
+i=2;
+while(i<=7)do
     [DISK_MAP_TABLE +childPID*10 +i]=[DISK_MAP_TABLE+10*[SYSTEM_STATUS_TABLE+1]+i];
     i=i+1;
 endwhile;
@@ -154,7 +154,6 @@ while(i<=7)do
     [childPTBR+i*2+1]=[PTBR+i*2+1];
     if([PTBR+i*2]!=-1)then
         [MEMORY_FREE_LIST+[PTBR+i*2]]=[MEMORY_FREE_LIST+[PTBR+i*2]]+1;
-    endif;
     i=i+1;
 endwhile;
 

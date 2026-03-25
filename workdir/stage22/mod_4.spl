@@ -9,6 +9,7 @@ if(fxnNum==1)then
 endif;
 
 if(fxnNum==2)then // DISK_LOAD
+    //print "Disk_Access";
     alias pgNo R3;
     alias blkNo R4;
 

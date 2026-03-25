@@ -1,5 +1,7 @@
 //SCHEDULER module
 
+//print "Ctxt_Switch";
+
 //push BP of the timer ISR 
 multipush(BP);
 

@@ -3,18 +3,22 @@ alias userSP R5;
 userSP=SP;
 
 //mode flag
-[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+9]=8;
-[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+13]=SP;
-SP=[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+11]*512-1;
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1]+9]=8;
+
+//switch to kernel stack
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] +13]=SP;
+SP=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1]+11]*512-1;
 
 //call Get_Pcb_Entry from process manager module
-multipush(R0,R1,R5,R7);
+multipush(R0,R1,R5);
 R1=GET_PCB_ENTRY;
 call MOD_1;
 
 //R0 has child currPID
+//mode flag
+
 R10=R0;
-multipop(R0,R1,R5,R7);
+multipop(R0,R1,R5);
 R0=R10;
 
 alias childPID R0;
@@ -31,25 +35,25 @@ endif;
 //here: we have space for a child process entry in pcb 
 
 //check if heap present
-if([PTBR+2*2]==-1)then
+if([PTBR+4]==-1)then
     //call Get_Free_Pg
-    multipush(R0,R1,R5,R7);
+    multipush(R0,R1,R5);
     R1=GET_FREE_PAGE;
     call MOD_2;
     //R0 has free pg no.
     R10=R0;
-    multipop(R0,R1,R5,R7);
-    [PTBR +2*2]=R10;
-    [PTBR+2*2+1]="0110";
+    multipop(R0,R1,R5);
+    [PTBR +4]=R10;
+    [PTBR+5]="0110";
 
-    multipush(R0,R1,R5,R7);
+    multipush(R0,R1,R5);
     R1=GET_FREE_PAGE;
     call MOD_2;
     //R0 has free pg no.
     R10=R0;
-    multipop(R0,R1,R5,R7);
-    [PTBR +3*2]=R10;
-    [PTBR+3*2+1]="0110";
+    multipop(R0,R1,R5);
+    [PTBR +6]=R10;
+    [PTBR+7]="0110";
 endif;
 
 //we're sure that parent process has heap pages
@@ -67,7 +71,7 @@ call MOD_2;
 //R0 has free pg no.
 R10=R0;
 multipop(R0,R1,R5,R7);
-[childPTBR+8*2]=R10;
+[childPTBR+16]=R10;
 
 multipush(R0,R1,R5,R7);
 R1=GET_FREE_PAGE;
@@ -75,7 +79,7 @@ call MOD_2;
 //R0 has free pg no.
 R10=R0;
 multipop(R0,R1,R5,R7);
-[childPTBR+9*2]=R10;
+[childPTBR+18]=R10;
 
 //set up userArea pg for child process
 
@@ -125,10 +129,14 @@ childProcessTbl=PROCESS_TABLE+16*childPID;
 //  0-511 in total, last 16 words needed
 
 alias i R9;
-i=0;
-while(i<16)do
-    [[childProcessTbl+11]*512 +511-i]=[[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+11]*512 +511-i];
-    i=i+1;
+i = 0;
+while( (i < 16) ) do
+	[[childProcessTbl + 11]*512 + 496 + i] = [[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 11]*512 + 496 + i];
+	if( ([ [childProcessTbl + 11]*512 + 496 + i] == SEMAPHORE) ) then
+		//incrementing semaphore table process count of the shared semaphores
+		[SEMAPHORE_TABLE + [ [childProcessTbl + 11]*512 + 496 + i]*4 + 1] = [SEMAPHORE_TABLE + [ [childProcessTbl + 11]*512 + 496 + i]*4 + 1] + 1;
+	endif;
+	i = i + 1;
 endwhile;
 
 //copy per-process disk map tbl of parent to child
@@ -152,7 +160,7 @@ i=0;
 while(i<=7)do
     [childPTBR+i*2]=[PTBR+i*2];
     [childPTBR+i*2+1]=[PTBR+i*2+1];
-    if([PTBR+i*2]!=-1)then
+    if([PTBR+2*i+1]!=-1)then
         [MEMORY_FREE_LIST+[PTBR+i*2]]=[MEMORY_FREE_LIST+[PTBR+i*2]]+1;
     endif;
     i=i+1;
@@ -160,33 +168,28 @@ endwhile;
 
 //stack pages ->assigned in line 56
 //but aux info same as parent
-[childPTBR+8*2+1]="0110";
-[childPTBR+9*2+1]="0110";
+[childPTBR+17]="0110";
+[childPTBR+19]="0110";
 
 //copy userStack content word by word 
 i=0;
 while(i<512)do
-    [[childPTBR+8*2]*512+i]=[[PTBR +8*2]*512 +i];
-    [[childPTBR+9*2]*512+i]=[[PTBR +9*2]*512 +i];
+    [[childPTBR+16]*512+i]=[[PTBR +16]*512 +i];
+    [[childPTBR+18]*512+i]=[[PTBR +18]*512 +i];
     i=i+1;
 endwhile;
 
 //store BP to top of kernel stack of child process
-i=[childProcessTbl+11]*512-1;
-i=i+1;
-[i]=BP;
+[[childProcessTbl+11]*512]=BP;
 
 //set up the return val in parent
-alias ret R2;
-ret= ([PTBR +2*((userSP-1)/512)]*512) + (userSP-1)%512;
-[ret]=childPID;
+[([PTBR +2*((userSP-1)/512)]*512) + (userSP-1)%512]=childPID;
 
 //set up return val in child 
-ret=[childPTBR+2*((userSP-1)/512)]*512 + (userSP-1)%512;
-[ret]=0;
+[[childPTBR+2*((userSP-1)/512)]*512 + (userSP-1)%512]=0;
 
 //mode of par=0
-[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+9]=0;
-SP=[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+13];
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1]+9]=0;
+SP=[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1]+13];
 
 ireturn;
