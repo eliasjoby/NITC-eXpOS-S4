@@ -5,6 +5,61 @@ alias currPID R2;
 alias i R6;
 
 
+//acquire inode
+if (fxnNum == ACQUIRE_INODE) then
+  alias inode R2;
+  alias cpid R3;
+
+//  while this inode is locked schedule something else
+  while([FILE_STATUS_TABLE + inode*4] != -1) do
+    [PROCESS_TABLE + cpid* 16 + 4] = WAIT_FILE;
+    [PROCESS_TABLE + cpid* 16 + 5] = inode;
+    multipush(R1,R2,R3);
+      call SCHEDULER;
+    multipop(R1,R2,R3);
+  endwhile;
+
+  //return -1 if the file was deleted before acquirng
+  if([INODE_TABLE + inode*16 + 1] == -1)then
+    R0=-1;
+    return;
+  endif;
+
+  [FILE_STATUS_TABLE + inode*4] = cpid;
+  R0=0;
+  return;
+endif;
+
+
+//release inode
+if( fxnNum == RELEASE_INODE) then
+  alias inode R2;
+  alias cpid R3;
+  
+  //if inode wrong process tries to unlock
+  if([FILE_STATUS_TABLE + inode*4] != cpid) then
+    R0=-1;
+    return;
+  endif;
+
+  alias i R4;
+
+  i=0;
+  while(i < 16) do
+    if([PROCESS_TABLE + i*16 +4] == WAIT_FILE && [PROCESS_TABLE + i*16 +5] == inode )then
+      [PROCESS_TABLE + i *16 + 4] = READY;
+    endif;
+    i=i+1;
+  endwhile;
+
+  //unlock inode after waking up waiters
+  [FILE_STATUS_TABLE + inode*4] = -1;
+  
+  R0=0;
+  return;
+endif;
+
+
 //acquire_semaphore
 if(fxnNum==6)then
     alias i R3;

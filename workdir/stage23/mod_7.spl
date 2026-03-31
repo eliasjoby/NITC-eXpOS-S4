@@ -56,6 +56,14 @@ loadi(29,42);
 loadi(30,43);
 loadi(31,44);
 
+//load int 4 (create & delete)
+loadi(10,23);
+loadi(11,24);
+
+//root File
+loadi(62,5);
+
+
 //init
 loadi(65,7);
 loadi(66,8);
@@ -138,6 +146,7 @@ alias init_process_tbl R10;
 init_process_tbl=PROCESS_TABLE+16;
 
 [init_process_tbl+ 1]=1;
+[init_process_tbl+ 3]=1; //userID=root
 [init_process_tbl+ 4]=CREATED;
 [init_process_tbl+ 11]=80;
 [init_process_tbl+ 12]=0;
@@ -393,6 +402,23 @@ i=0;
 while(i<MAX_SEM_COUNT)do
     [SEMAPHORE_TABLE+i*4+0]=-1;
     [SEMAPHORE_TABLE+i*4+1]=0;
+    i=i+1;
+endwhile;
+
+//initialise file status tbl 
+i=0;
+while(i<MAX_FILE_NUM)do
+    [FILE_STATUS_TABLE+i*4+0]=-1;
+    [FILE_STATUS_TABLE+i*4+1]=-1;
+    i=i+1;
+endwhile;
+
+//initialise buffer tbl 
+i=0;
+while(i<MAX_BUFFER)do   
+    [BUFFER_TABLE+i*4+0]=-1;
+    [BUFFER_TABLE+i*4+1]=0;
+    [BUFFER_TABLE+i*4+2]=-1;
     i=i+1;
 endwhile;
 
