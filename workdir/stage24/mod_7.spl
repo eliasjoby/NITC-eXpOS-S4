@@ -168,7 +168,7 @@ init_process_tbl=PROCESS_TABLE+16;
 
 //allot the last 16 words -> 8 entries of 2 words each
 
-multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
+multipush(R11,R12);
 alias j R11;
 j=0;
 alias i R12;
@@ -179,7 +179,7 @@ while(j<16)do
     j=j+1;
 endwhile;
 
-multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12);
+multipop(R11,R12);
 
 //--------------------------------------------------
 
@@ -418,6 +418,15 @@ i=0;
 while(i<MAX_FILE_NUM)do
     [FILE_STATUS_TABLE+i*4+0]=-1;
     [FILE_STATUS_TABLE+i*4+1]=-1;
+    i=i+1;
+endwhile;
+
+//initialise open file table (inode=-1, share=0, lseek=0)
+i=0;
+while(i<MAX_OPENFILE_NUM)do
+    [OPEN_FILE_TABLE+i*4+0]=-1;
+    [OPEN_FILE_TABLE+i*4+1]=0;
+    [OPEN_FILE_TABLE+i*4+2]=0;
     i=i+1;
 endwhile;
 
