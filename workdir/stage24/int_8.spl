@@ -136,6 +136,10 @@ while( (i < 16) ) do
 		//incrementing semaphore table process count of the shared semaphores
 		[SEMAPHORE_TABLE + [ [childProcessTbl + 11]*512 + 496 + i]*4 + 1] = [SEMAPHORE_TABLE + [ [childProcessTbl + 11]*512 + 496 + i]*4 + 1] + 1;
 	endif;
+    //share files
+    if([[childProcessTbl + 11]*512 + 496 + i] == FILE ) then
+        [OPEN_FILE_TABLE + [[childProcessTbl + 11]*512 + 496 + i+1]*4 + 1] = [OPEN_FILE_TABLE+ [[childProcessTbl + 11]*512 + 496 + i+1]*4 + 1] +1;
+    endif; 
 	i = i + 1;
 endwhile;
 

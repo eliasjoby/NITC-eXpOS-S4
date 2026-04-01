@@ -20,6 +20,10 @@ loadi(9,22);
 loadi(6,19);
 loadi(7,20);
 
+//int5 : seek,open,close
+loadi(12,25);
+loadi(13,26);
+
 //int6 : read
 loadi(14,27);
 loadi(15,28);
@@ -86,6 +90,10 @@ loadi(43,56);
 //MOD_2:
 loadi(44,57);
 loadi(45,58);
+
+//MOD_3 : file manager 
+loadi(46,59);
+loadi(47,60);
 
 //MOD_4:device manager
 loadi(48,61);

@@ -2,6 +2,7 @@ fdisk
 load --exhandler /home/expos/myexpos/workdir/stage24/exception.xsm
 load --library /home/expos/myexpos/expl/library.lib
 load --int=4 /home/expos/myexpos/workdir/stage24/int_4.xsm
+load --int=5 /home/expos/myexpos/workdir/stage24/int_5.xsm
 load --int=6 /home/expos/myexpos/workdir/stage24/int_6.xsm
 load --int=7 /home/expos/myexpos/workdir/stage24/int_7.xsm
 load --int=9 /home/expos/myexpos/workdir/stage24/int_9.xsm
@@ -16,6 +17,7 @@ load --int=disk /home/expos/myexpos/workdir/stage24/disk.xsm
 load --module 0 /home/expos/myexpos/workdir/stage24/mod_0.xsm
 load --module 1 /home/expos/myexpos/workdir/stage24/mod_1.xsm
 load --module 2 /home/expos/myexpos/workdir/stage24/mod_2.xsm
+load --module 3 /home/expos/myexpos/workdir/stage24/mod_3.xsm
 load --module 4 /home/expos/myexpos/workdir/stage24/mod_4.xsm
 load --module 5 /home/expos/myexpos/workdir/stage24/mod_5.xsm
 load --module 7 /home/expos/myexpos/workdir/stage24/mod_7.xsm
@@ -23,4 +25,8 @@ load --os /home/expos/myexpos/workdir/stage24/os_startup.xsm
 load --init /home/expos/myexpos/workdir/stage24/users/shell.xsm
 load --idle /home/expos/myexpos/workdir/stage24/users/idle.xsm
 load --exec /home/expos/myexpos/workdir/stage24/users/samples/odd.xsm
-load --exec /home/expos/myexpos/workdir/stage24/users/samples/even.xsm
+load --exec /home/expos/myexpos/workdir/stage24/users/create.xsm
+load --exec /home/expos/myexpos/workdir/stage24/users/delete.xsm
+load --data /home/expos/myexpos/workdir/stage24/users/sample.dat
+load --data /home/expos/myexpos/workdir/stage24/users/numbers.dat
+load --exec /home/expos/myexpos/workdir/stage24/users/read.xsm

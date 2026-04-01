@@ -158,5 +158,48 @@ if(fxnNum==9)then
     endif;
 endif;
 
+if ( fxnNum == ACQUIRE_BUFFER) then
+  //buff no
+  alias buffno R2;
+  alias pid R3;
+
+  while([BUFFER_TABLE+buffno*4 + 2] != -1) do
+    [PROCESS_TABLE + pid * 16 + 4] = WAIT_BUFFER;
+    [PROCESS_TABLE + pid * 16 + 5] = buffno;
+
+    multipush(R2,R3);
+      call SCHEDULER;
+    multipop(R2,R3);
+  endwhile;
+
+  [BUFFER_TABLE+buffno*4+2] = pid;
+  return;
+endif;
+
+if ( fxnNum == RELEASE_BUFFER) then
+  //buff no
+  alias buff R2;
+  alias pid R3;
+  //pid
+  if(pid != [BUFFER_TABLE+buff*4 + 2])then
+    R0=-1;
+    return;
+  endif;
+
+  [BUFFER_TABLE+buff*4 + 2] = -1;
+
+  alias i R4;
+  i=0;
+  while(i < 16) do
+    if([PROCESS_TABLE + i*16 +4] == WAIT_BUFFER && [PROCESS_TABLE + i*16 +5] == buff)then
+      [PROCESS_TABLE + i *16 + 4] = READY;
+    endif;
+    i=i+1;
+  endwhile;
+
+  R0=0;
+  return;
+endif;
+
 R0=-1;
 return;
