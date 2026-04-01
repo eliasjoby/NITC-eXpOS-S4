@@ -24,5 +24,8 @@ load --idle /home/expos/myexpos/workdir/stage22/users/idle.xsm
 load --exec /home/expos/myexpos/workdir/stage22/users/samples/odd.xsm
 load --exec /home/expos/myexpos/workdir/stage22/users/samples/even.xsm
 load --exec /home/expos/myexpos/workdir/stage22/users/samples/ll.xsm
+load --exec /home/expos/myexpos/workdir/stage22/users/rw.xsm
 load --exec /home/expos/myexpos/workdir/stage22/users/merge_s.xsm
 load --exec /home/expos/myexpos/workdir/stage22/users/merge_c.xsm
+load --exec /home/expos/myexpos/workdir/stage22/users/parent.xsm
+load --exec /home/expos/myexpos/workdir/stage22/users/child.xsm
