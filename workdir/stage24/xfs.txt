@@ -30,3 +30,4 @@ load --exec /home/expos/myexpos/workdir/stage24/users/delete.xsm
 load --data /home/expos/myexpos/workdir/stage24/users/sample.dat
 load --data /home/expos/myexpos/workdir/stage24/users/numbers.dat
 load --exec /home/expos/myexpos/workdir/stage24/users/read.xsm
+load --exec /home/expos/myexpos/workdir/stage24/users/assg2.xsm

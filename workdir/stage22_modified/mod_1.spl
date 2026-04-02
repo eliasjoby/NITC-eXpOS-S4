@@ -48,10 +48,14 @@ if(fxnNum==3)then //EXIT_PROCESS
 
         //we aren't coming from the exec system call
         alias i R5;
+        alias parent R6;
+        parent=[PROCESS_TABLE+16*[SYSTEM_STATUS_TABLE+1]+2];
         i=0;
         while(i<MAX_PROC_NUM)do
-            if( ([PROCESS_TABLE+16*i+4]==WAIT_PROCESS) && ([PROCESS_TABLE+16*i+5]==pid) )then
-                [PROCESS_TABLE+16*i+4]=READY;
+            if( ([PROCESS_TABLE+16*i+4]==WAIT_PROCESS))then
+                if([PROCESS_TABLE+16*i+5]==parent || [PROCESS_TABLE+16*i+5]==pid)then
+                    [PROCESS_TABLE+16*i+4]=READY;
+                endif;
             endif;
             if([PROCESS_TABLE+16*i+2]==pid)then //orphans...set ppid -1
                 [PROCESS_TABLE+16*i+2]=-1;
