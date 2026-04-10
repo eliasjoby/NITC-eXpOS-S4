@@ -1,44 +1,40 @@
 fdisk
-load --os /home/laksha/myexpos/spl/spl_progs/st_27/os_startup_st_27.xsm
-load --library /home/laksha/myexpos/expl/library.lib
-load --init /home/laksha/myexpos/spl/spl_progs/st_27/init.xsm
-load --idle /home/laksha/myexpos/expl/samples/idle.xsm
-load --shell /home/laksha/myexpos/spl/spl_progs/st_27/shell.xsm
-load --exhandler /home/laksha/myexpos/spl/spl_progs/st_27/exhandler.xsm
-load --int=timer /home/laksha/myexpos/spl/spl_progs/st_27/sample_timer_st_27.xsm
-load --int=console /home/laksha/myexpos/spl/spl_progs/st_27/sample_console_st_27.xsm
-load --int=disk /home/laksha/myexpos/spl/spl_progs/st_27/sample_disk_st_27.xsm
-load --module 0 /home/laksha/myexpos/spl/spl_progs/st_27/resource_manager_st_27.xsm
-load --module 1 /home/laksha/myexpos/spl/spl_progs/st_27/process_manager_mod_1.xsm
-load --module 2 /home/laksha/myexpos/spl/spl_progs/st_27/memory_manager_mod_2_st_27.xsm
-load --module 3 /home/laksha/myexpos/spl/spl_progs/st_27/file_manager_mod3.xsm
-load --module 4 /home/laksha/myexpos/spl/spl_progs/st_27/device_manager_st_27.xsm
-load --module 5 /home/laksha/myexpos/spl/spl_progs/st_27/context_switcher_st_27.xsm
-load --module 6 /home/laksha/myexpos/spl/spl_progs/st_27/pager_mod6.xsm
-load --module 7 /home/laksha/myexpos/spl/spl_progs/st_27/boot_27.xsm
-load --int=4 /home/laksha/myexpos/spl/spl_progs/st_27/sample_int4.xsm
-load --int=5 /home/laksha/myexpos/spl/spl_progs/st_27/sample_int5.xsm
-load --int=6 /home/laksha/myexpos/spl/spl_progs/st_27/sample_int6_st_27.xsm 
-load --int=7 /home/laksha/myexpos/spl/spl_progs/st_27/int7_st_27.xsm
-load --int=8 /home/laksha/myexpos/spl/spl_progs/st_27/sample_int8.xsm
-load --int=9 /home/laksha/myexpos/spl/spl_progs/st_27/sample_int9.xsm
-load --int=10 /home/laksha/myexpos/spl/spl_progs/st_27/int10_st_27.xsm
-load --int=11 /home/laksha/myexpos/spl/spl_progs/st_27/sample_int11.xsm
-load --int=12 /home/laksha/myexpos/spl/spl_progs/st_27/sample_int12.xsm
-load --int=13 /home/laksha/myexpos/spl/spl_progs/st_27/sample_int13.xsm
-load --int=14 /home/laksha/myexpos/spl/spl_progs/st_27/sample_int14.xsm
-load --int=15 /home/laksha/myexpos/spl/spl_progs/st_27/sample_int15.xsm
-load --int=16 /home/laksha/myexpos/spl/spl_progs/st_27/sample_int16.xsm
-load --int=17 /home/laksha/myexpos/spl/spl_progs/st_27/sample_int17.xsm
-load --exec /home/laksha/myexpos/spl/spl_progs/st_27/a5.xsm
-load --exec /home/laksha/myexpos/spl/spl_progs/st_27/m_merge.xsm
-load --exec /home/laksha/myexpos/spl/spl_progs/st_27/m_sort.xsm
-load --exec /home/laksha/myexpos/spl/spl_progs/st_27/m_store.xsm
-load --exec /home/laksha/myexpos/spl/spl_progs/progs/cat.xsm
-load --exec /home/laksha/myexpos/spl/spl_progs/progs/cp.xsm
-load --exec /home/laksha/myexpos/spl/spl_progs/progs/debug.xsm
-load --exec /home/laksha/myexpos/spl/spl_progs/progs/ls.xsm
-load --exec /home/laksha/myexpos/spl/spl_progs/progs/lu.xsm
-load --exec /home/laksha/myexpos/spl/spl_progs/progs/rm.xsm
-load --exec /home/laksha/myexpos/spl/spl_progs/progs/ru.xsm
-load --exec /home/laksha/myexpos/spl/spl_progs/progs/touch.xsm
+load --os /home/expos/myexpos/workdir/stage27/os_startup_st_27.xsm
+load --library /home/expos/myexpos/expl/library.lib
+load --init /home/expos/myexpos/workdir/stage27/init.xsm
+load --idle /home/expos/myexpos/workdir/stage27/idle.xsm
+load --exhandler /home/expos/myexpos/workdir/stage27/exhandler.xsm
+load --int=timer /home/expos/myexpos/workdir/stage27/sample_timer_st_27.xsm
+load --int=console /home/expos/myexpos/workdir/stage27/sample_console_st_27.xsm
+load --int=disk /home/expos/myexpos/workdir/stage27/sample_disk_st_27.xsm
+load --module 0 /home/expos/myexpos/workdir/stage27/resource_manager_st_27.xsm
+load --module 1 /home/expos/myexpos/workdir/stage27/process_manager_mod_1.xsm
+load --module 2 /home/expos/myexpos/workdir/stage27/memory_manager_mod_2_st_27.xsm
+load --module 3 /home/expos/myexpos/workdir/stage27/file_manager_mod3.xsm
+load --module 4 /home/expos/myexpos/workdir/stage27/device_manager_st_27.xsm
+load --module 5 /home/expos/myexpos/workdir/stage27/context_switcher_st_27.xsm
+load --module 7 /home/expos/myexpos/workdir/stage27/boot_27.xsm
+load --int=4 /home/expos/myexpos/workdir/stage27/sample_int4.xsm
+load --int=5 /home/expos/myexpos/workdir/stage27/sample_int5.xsm
+load --int=6 /home/expos/myexpos/workdir/stage27/sample_int6_st_27.xsm 
+load --int=7 /home/expos/myexpos/workdir/stage27/int7_st_27.xsm
+load --int=8 /home/expos/myexpos/workdir/stage27/sample_int8.xsm
+load --int=9 /home/expos/myexpos/workdir/stage27/sample_int9.xsm
+load --int=10 /home/expos/myexpos/workdir/stage27/int10_st_27.xsm
+load --int=11 /home/expos/myexpos/workdir/stage27/sample_int11.xsm
+load --int=11 /home/expos/myexpos/workdir/stage27/sample_int12.xsm
+load --int=13 /home/expos/myexpos/workdir/stage27/sample_int13.xsm
+load --int=14 /home/expos/myexpos/workdir/stage27/sample_int14.xsm
+load --int=15 /home/expos/myexpos/workdir/stage27/sample_int15.xsm
+load --int=15 /home/expos/myexpos/workdir/stage27/sample_int16.xsm
+load --int=15 /home/expos/myexpos/workdir/stage27/sample_int17.xsm
+load --exec /home/expos/myexpos/workdir/stage27/a5.xsm
+load --exec /home/expos/myexpos/workdir/stage27/pid.xsm
+load --exec /home/expos/myexpos/workdir/stage27/cat.xsm
+load --exec /home/expos/myexpos/workdir/stage27/cp.xsm
+load --exec /home/expos/myexpos/workdir/stage27/debug.xsm
+load --exec /home/expos/myexpos/workdir/stage27/ls.xsm
+load --exec /home/expos/myexpos/workdir/stage27/lu.xsm
+load --exec /home/expos/myexpos/workdir/stage27/rm.xsm
+load --exec /home/expos/myexpos/workdir/stage27/ru.xsm
+load --exec /home/expos/myexpos/workdir/stage27/touch.xsm
