@@ -4,7 +4,7 @@ Repo contains the project files of the Experimental Operating System as a part o
 
 ## Foreword
 
-Good Going as of now !!
+This repository chronicles all stages of building eXpOS from scratch, turning bare metal into a functioning kernel.
 
 ## Table of Contents
 
