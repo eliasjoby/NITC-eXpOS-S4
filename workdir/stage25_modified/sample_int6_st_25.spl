@@ -1,6 +1,6 @@
 // ===============================
-// READ SYSTEM CALL
-// MODE_FLAG = 7
+// READ SYSTEM CALL              |
+// MODE_FLAG = 7                 |
 // ===============================
 
 // Set MODE_FLAG
@@ -25,7 +25,7 @@ word =
     [[PTBR + 2 * (userSP - 3) / 512] * 512 + (userSP - 3) % 512];
 
 // ===============================
-// TERMINAL READ
+// TERMINAL READ                 
 // ===============================
 
 if (fileDiscriptor == -1) then

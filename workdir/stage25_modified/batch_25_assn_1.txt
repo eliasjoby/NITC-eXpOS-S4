@@ -26,6 +26,7 @@ load --int=13 /home/expos/myexpos/workdir/stage25_modified/sample_int13.xsm
 load --int=14 /home/expos/myexpos/workdir/stage25_modified/sample_int14.xsm
 load --int=15 /home/expos/myexpos/workdir/stage25_modified/sample_int15.xsm
 load --exec /home/expos/myexpos/workdir/stage25_modified/a1.xsm
+load --exec /home/expos/myexpos/workdir/stage25_modified/mq.xsm
 load --exec /home/expos/myexpos/workdir/stage25_modified/cat.xsm
 load --exec /home/expos/myexpos/workdir/stage25_modified/cp.xsm
 load --exec /home/expos/myexpos/workdir/stage25_modified/debug.xsm

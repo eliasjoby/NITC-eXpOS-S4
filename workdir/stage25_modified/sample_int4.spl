@@ -275,7 +275,7 @@ if (syscall == INT_DELETE) then
 
                     // ================= RELEASE BLOCKS =================
 
-                    R4 = ;
+                    R4 =1;
 
                     while (R4 < 4) do
 
@@ -330,16 +330,23 @@ if (syscall == INT_DELETE) then
 
                     // ================= DELETE FILE =================
 
-                    [inodeR3 + 1] = -1;
+                    // instead of deleting the file, we release all the blocks except the 1st one which contains 512 words=512*15 char=5120+2560=7680 characters
 
 
 
-                    alias rootR3 R8;
+                    //open the file
+                    //seek the pointer to 100
+                    //delete the remaining of the file
+                    
+                    
+                    R10=100;
 
-                    rootR3 =
-                        ROOT_FILE + 8 * R3;
 
-                    [rootR3] = -1;
+
+
+
+
+
 
 
 
