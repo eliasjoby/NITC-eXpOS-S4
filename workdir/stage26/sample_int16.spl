@@ -1,0 +1,339 @@
+alias userSP R1;
+userSP = SP;
+
+alias ProcessTable R2;
+ProcessTable = PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1];
+
+alias syscall R3;
+syscall = [[PTBR + 2*((userSP-5)/512)]*512 + ((userSP-5)%512)];
+
+alias username R4;
+username = [[PTBR + 2*((userSP-4)/512)]*512 + ((userSP-4)%512)];
+
+alias password R5;
+password = [[PTBR + 2*((userSP-3)/512)]*512 + ((userSP-3)%512)];
+
+// Save user SP
+[ProcessTable+13] = userSP;
+
+alias pid R6;
+pid = [SYSTEM_STATUS_TABLE+1];
+
+alias retadd R10;
+// Address where return value should be written
+retadd = [PTBR + 2*((userSP-1)/512)]*512 + ((userSP-1)%512);
+
+
+
+// =========================
+// NEWUSR (22)
+// =========================
+
+if (syscall == INT_NEWUSR) then
+
+    // Set MODE_FLAG
+    [ProcessTable+9] = INT_NEWUSR;
+
+    // Permission check: only root shell, no one else can create new user
+    if ([SYSTEM_STATUS_TABLE] != 1 || pid != 2) then
+
+        [retadd] = -2;
+
+    else
+
+        R3 = 0;
+        R8 = -1;
+
+        // Search for existing user and free slot
+        while (R3 < MAX_USER_NUM) do
+
+            R7 = USER_TABLE + 2*R3;
+
+            if ([R7] == username) then
+
+                R3 = -1; //user alr eits
+                break;
+
+            else
+
+                if ([R7] == -1 && R8 == -1) then
+                    R8 = R3;	
+                endif;
+
+            endif;
+
+            R3 = R3 + 1;
+
+        endwhile;
+
+
+        if (R3 != -1) then
+
+            if (R8 < MAX_USER_NUM) then		//if max limit not reached
+
+                // Encrypt password
+                encrypt password;
+
+                // Insert new user
+                R7 = USER_TABLE + 2*R8;
+                [R7] = username;
+                [R7+1] = password;
+
+                [retadd] = 0;
+
+            else
+
+                [retadd] = -3;	//no free entry
+
+            endif;
+
+        else
+
+            [retadd] = -1;
+
+        endif;
+
+    endif;
+
+    // Reset MODE_FLAG
+    [ProcessTable+9] = 0;
+
+    ireturn;
+
+endif;
+
+
+
+// =========================
+// REMUSR (23)
+// =========================
+
+if (syscall == INT_REMUSR) then
+
+    // Set MODE_FLAG
+    [ProcessTable+9] = INT_REMUSR;
+
+    // Permission check, must be shell or user
+    if ([SYSTEM_STATUS_TABLE] != 1 || pid != 2) then
+
+        [retadd] = -2;
+
+    else
+
+        // Protect root and kernel
+        if (username == "root" || username == "kernel") then
+
+            [retadd] = -2;
+
+        else
+
+            R3 = 0;
+
+            // Find user entry
+            while (R3 < MAX_USER_NUM) do
+
+                R7 = USER_TABLE + 2*R3;
+
+                if ([R7] == username) then
+                    break;
+                endif;
+
+                R3 = R3 + 1;
+
+            endwhile;
+
+
+            if (R3 < MAX_USER_NUM) then		//valid user
+
+                R5 = 0;
+
+                // Check undeleted files
+                while (R5 < MAX_FILE_NUM) do	//check rootfile and find if the file to be deleted has some files
+
+                    R7 = ROOT_FILE + 8*R5;
+
+                    if ([R7+3] == username) then
+
+                        [retadd] = -3;
+
+                        [ProcessTable+9] = 0;
+
+                        ireturn;
+
+                    endif;
+
+                    R5 = R5 + 1;
+
+                endwhile;
+
+                // Invalidate user entry
+                [USER_TABLE + 2*R3] = -1;	//no undeleted file, then invalidate the entry to -1 in both
+                [USER_TABLE + 2*R3 + 1] = -1;
+
+                [retadd] = 0;
+
+            else
+
+                [retadd] = -1;
+
+            endif;
+
+        endif;
+
+    endif;
+
+    // Reset MODE_FLAG
+    [ProcessTable+9] = 0;
+
+    ireturn;
+
+endif;
+
+
+
+// =========================
+// SETPWD (24) (username, pwd)
+// =========================
+
+if (syscall == INT_SETPWD) then
+
+    // Set MODE_FLAG
+    [ProcessTable+9] = INT_SETPWD;
+
+    // Only shell process
+    if (pid != 2) then
+
+        [retadd] = -1;
+
+    else
+
+        R3 = 0;
+
+        // Find user entry, to check if its the current user calling it
+        while (R3 < MAX_USER_NUM) do
+
+            R7 = USER_TABLE + 2*R3;
+
+            if ([R7] == username) then
+                break;
+            endif;
+
+            R3 = R3 + 1;
+
+        endwhile;
+
+
+        if (R3 < MAX_USER_NUM) then
+
+            // Authorization check, authorising if its the correct user calling this function
+            if ([ProcessTable+3] != R3 && [SYSTEM_STATUS_TABLE] != 1) then
+
+                [retadd] = -1;
+
+            else
+
+                // Encrypt new password
+                encrypt password;
+
+                // Update password
+                [USER_TABLE + 2*R3 + 1] = password;
+
+                [retadd] = 0;
+
+            endif;
+
+        else
+
+            [retadd] = -2; //entry not found only 
+
+        endif;
+
+    endif;
+
+    // Reset MODE_FLAG
+    [ProcessTable+9] = 0;
+
+    ireturn;
+
+endif;
+
+
+
+// =========================
+// GETUID (26) (username)
+// =========================
+
+if (syscall == INT_GETUID) then
+
+    // Set MODE_FLAG
+    [ProcessTable+9] = INT_GETUID;
+
+    R3 = 0;
+
+    // Search username
+    while (R3 < MAX_USER_NUM) do
+
+        R7 = USER_TABLE + 2*R3;
+
+        if ([R7] == username) then
+
+            [retadd] = R3;
+ 
+            R3 = -1;
+
+            break;
+
+        endif;
+
+        R3 = R3 + 1;
+
+    endwhile;
+
+
+    if (R3 != -1) then
+        [retadd] = -1; //if userid never found, the index of the table is the user id
+    endif;
+
+    // Reset MODE_FLAG
+    [ProcessTable+9] = 0;
+
+    ireturn;
+
+endif;
+
+
+
+// =========================
+// GETUNAME (25) (userid)
+// =========================
+
+if (syscall == INT_GETUNAME) then
+    // Set MODE_FLAG
+    [ProcessTable+9] = INT_GETUNAME;
+
+    // Validate userid
+    if (username < 0 || username > 15) then
+
+        [retadd] = -1;
+
+    else
+
+        R7 = USER_TABLE + 2*username;
+
+        if ([R7] == -1) then
+
+            [retadd] = -1;
+
+        else
+            [retadd] = [R7];
+
+        endif;
+
+    endif;
+
+    // Reset MODE_FLAG
+    [ProcessTable+9] = 0;
+
+    ireturn;
+
+endif;
