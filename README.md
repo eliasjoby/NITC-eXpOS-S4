@@ -50,12 +50,6 @@ This repository chronicles all stages of building eXpOS from scratch, turning ba
 * Stage 20 - [Process creation and termination](https://exposnitc.github.io/expos-docs/roadmap/stage-20/)
 * Stage 21 - [Process synchronization](https://exposnitc.github.io/expos-docs/roadmap/stage-21/)
 * Stage 22 - [Semaphores](https://exposnitc.github.io/expos-docs/roadmap/stage-22/)
-* Stage 23 - [File creation and deletion](https://exposnitc.github.io/expos-docs/roadmap/stage-23/)
-* Stage 24 - [File read](https://exposnitc.github.io/expos-docs/roadmap/stage-24/)
-* Stage 25 - [File write](https://exposnitc.github.io/expos-docs/roadmap/stage-25/)
-* Stage 26 - [User management](https://exposnitc.github.io/expos-docs/roadmap/stage-26/)
-* Stage 27 - [Pager module](https://exposnitc.github.io/expos-docs/roadmap/stage-27/)
-* Stage 28 - [Multi-core extension](https://exposnitc.github.io/expos-docs/roadmap/stage-28/) - *parlial implementation due to buggy startfiles*
 
 ### Additions
 
